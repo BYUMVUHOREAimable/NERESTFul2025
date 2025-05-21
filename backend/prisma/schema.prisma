@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  PARKING_ATTENDANT
+  ADMIN
+}
+
+model Role {
+  id          String           @id @default(uuid())
+  name        RoleName         @unique
+  description String?
+  users       User[]
+  permissions RolePermission[]
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+}
+
+model RolePermission {
+  id            String     @id @default(uuid())
+  role_id       String
+  permission_id String
+  role          Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission    Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+
+  @@unique([role_id, permission_id])
+}
+
+model User {
+  id        String @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String @unique
+  password  String
+  role_id   String
+  role      Role   @relation(fields: [role_id], references: [id])
+
+  email_verified          Boolean @default(false) 
+  email_verification_code String? @unique 
+
+  reset_token         String?   @unique
+  reset_token_expires DateTime?
+
+ 
+  recorded_entries VehicleEntry[] @relation("RecordedByAttendant")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Parking {
+  id              String  @id @default(uuid())
+  code            String  @unique
+  name            String
+  total_spaces    Int
+  occupied_spaces Int     @default(0)
+  location        String?
+  charge_per_hour Decimal
+
+  vehicle_entries VehicleEntry[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model VehicleEntry {
+  id           String @id @default(uuid())
+  plate_number String
+
+  parking_id String
+  parking    Parking @relation(fields: [parking_id], references: [id])
+
+  entry_time DateTime  @default(now())
+  exit_time  DateTime?
+
+  calculated_duration_minutes Int?
+  charged_amount              Decimal?
+
+  status VehicleEntryStatus @default(PARKED)
+
+  ticket_number String  @unique
+  notes         String?
+
+  recorded_by_id String?
+  recorded_by    User?   @relation("RecordedByAttendant", fields: [recorded_by_id], references: [id], onDelete: SetNull)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([plate_number])
+  @@index([status])
+  @@index([entry_time])
+  @@index([exit_time])
+}
+
+enum VehicleEntryStatus {
+  PARKED
+  EXITED
+  
+}
+

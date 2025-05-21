@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Default font family */
+body {
+  font-family: "Inter", sans-serif;
+}
+@layer base {
+  :root {
+    /* --- Theme Variables (Now with Blue color values, names unchanged) --- */
+    --theme-background-page: 210 30% 97%; /* Was: 38 35% 97% (Very light, slightly warm off-white) -> Now: Very light, slightly cool off-white */
+    --theme-background-card: 0 0% 100%;    /* White for cards (remains same) */
+    --theme-background-input: 210 25% 95%; /* Was: 38 25% 95% (Light warm gray for inputs) -> Now: Light cool gray for inputs */
+    --theme-text-primary: 220 18% 20%;    /* Dark desaturated blue/charcoal (remains same) */
+    --theme-text-secondary: 220 15% 38%;  /* Lighter gray for secondary text (remains same) */
+    --theme-text-placeholder: 220 12% 58%;/* Placeholder text color (remains same) */
+    /* "DARKER YELLOWS" (Now Blue HSL values) */
+    --theme-accent-yellow: 215 85% 48%;   /* Was: 40 90% 50% (Rich Gold/Amber) -> Now: Rich, slightly deeper Blue for primary actions */
+    --theme-accent-yellow-hover: 215 80% 42%; /* Was: 38 95% 45% (Deeper Gold/Amber) -> Now: Deeper Blue for hover */
+    --theme-text-on-accent: 210 80% 98%;  /* Was: 35 80% 10% (Very Dark Brown) -> Now: Very Light Blue/White for text on blue accent */
+    --theme-link-default: 210 80% 48%;    /* Was: 38 80% 48% (Darker Amber link) -> Now: Darker Blue link color */
+    --theme-link-hover: 210 85% 42%;      /* Was: 36 85% 42% (Even Deeper amber link) -> Now: Even Deeper blue for link hover */
+    --theme-border-default: 210 20% 85%;   /* Was: 38 20% 85% (Warm light gray border) -> Now: Cool light gray border */
+    --theme-border-input: 210 20% 78%;     /* Was: 38 20% 78% (Slightly darker warm gray) -> Now: Slightly darker cool gray for input borders */
+    --theme-border-focus: var(--theme-accent-yellow); /* Will use the new blue value */
+    --theme-ring-focus: var(--theme-accent-yellow);   /* Will use the new blue value */
+    /* --- Shadcn UI Variables (Base - some will be overridden by theme) --- */
+    /* These will automatically inherit the new blue values via the variables above */
+    --background: var(--theme-background-page);
+    --foreground: var(--theme-text-primary);
+    --card: var(--theme-background-card);
+    --card-foreground: var(--theme-text-primary);
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: var(--theme-accent-yellow);        /* Shadcn primary is our "brand yellow" (now blue) */
+    --primary-foreground: var(--theme-text-on-accent); /* Text on "brand yellow" (now light text on blue) */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: var(--theme-text-secondary);
+    --accent: var(--theme-accent-yellow);         /* Shadcn accent is our "brand yellow" (now blue) */
+    --accent-foreground: var(--theme-text-on-accent); /* Text on "brand yellow" (now light text on blue) */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: var(--theme-border-default);
+    --input: var(--theme-border-input);
+    --ring: var(--theme-ring-focus);
+    --radius: 0.75rem;
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+/* Custom scrollbar using themed colors (adjust if needed) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  /* Use a very light version of page bg or a neutral gray */
+  @apply bg-slate-100 rounded-full;
+  /* For dark mode: .dark:bg-slate-700 */
+}
+::-webkit-scrollbar-thumb {
+  /* Use a muted version of brand "yellow" (now blue) or a complementary color */
+  @apply bg-blue-400 rounded-full transition-colors; /* UPDATED from bg-amber-300 */
+  /* For dark mode: .dark:bg-blue-600 */
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-blue-500; /* UPDATED from bg-amber-400 */
+}
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.card-hover {
+  @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+}
+.btn-hover {
+  @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+}
+.glass-effect {
+  @apply bg-white bg-opacity-20 backdrop-blur-lg rounded-lg border border-white border-opacity-20;
+}

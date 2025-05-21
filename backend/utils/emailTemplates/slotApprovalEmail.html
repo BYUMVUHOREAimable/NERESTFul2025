@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Slot Approved</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333333;
+        }
+
+        .content {
+            padding: 20px 0;
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        .content p {
+            margin: 0 0 15px 0;
+        }
+
+        .details-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .details-table th,
+        .details-table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .details-table th {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #4a69bd;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eeeeee;
+            font-size: 12px;
+            color: #999999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Parking Management System</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{userName}},</p>
+            <p>Great news! Your request for a parking slot has been <span class="highlight">APPROVED</span>.</p>
+            <p>Here are the details of your assigned parking slot:</p>
+            <table class="details-table">
+                <tr>
+                    <th>Vehicle Plate Number:</th>
+                    <td>{{vehiclePlateNumber}}</td>
+                </tr>
+                <tr>
+                    <th>Vehicle Type:</th>
+                    <td>{{vehicleType}}</td>
+                </tr>
+                <tr>
+                    <th>Assigned Slot Number:</th>
+                    <td class="highlight">{{slotNumber}}</td>
+                </tr>
+                <tr>
+                    <th>Slot Location:</th>
+                    <td>{{slotLocation}}</td>
+                </tr>
+                <tr>
+                    <th>Slot Size:</th>
+                    <td>{{slotSize}}</td>
+                </tr>
+                <tr>
+                    <th>Approval Date:</th>
+                    <td>{{approvalDate}}</td>
+                </tr>
+            </table>
+
+       
+            <p>Your parking has been confirmed and the cost of <strong>${{totalCost}}</strong> for
+                <strong>{{expectedDuration}} hours</strong> has been deducted from your balance.
+            </p>
+            <p>You can download your parking ticket for your records:</p>
+            <a href="{{ticketLink}}" class="button-link"
+                style="background-color: #28a745; color: #ffffff; display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">Download
+                Ticket (PDF)</a>
+            <p class="note">If the button doesn't work, copy and paste this link: {{ticketLink}}</p>
+         
+
+
+            <p>Please make sure to park your specified vehicle in the assigned slot.</p>
+            <p>If you have any questions, feel free to contact our support.</p>
+        </div>
+        <div class="footer">
+            <p>© {{year}} Parking Management System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
