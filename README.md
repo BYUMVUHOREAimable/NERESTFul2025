@@ -52,5 +52,3 @@ npm run dev
 | 🎨 Figma Design | [View Design](https://www.figma.com/design/iYkbfi9Gqc3cpoJTrGSiZ2/XYZ-LTD?node-id=0-1&p=f&t=fnG3ZgzoFNAvYgoS-0) |
 | 📊 ERD Diagram | [View ERD](https://app.diagrams.net/#G1Km-IR48U_Uq4DIJU25HA9N2oEGb-r3dG#%7B%22pageId%22%3A%229VmOrt0x0RssbpCkh1Rw%22%7D) |
 | 📚 API Documentation | [Swagger UI](http://localhost:5000/api-docs/) |
-
-// ... rest of existing code ...
