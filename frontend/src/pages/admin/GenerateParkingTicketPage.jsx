@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card'; // Adjust path
-import { Button } from '../../components/ui/button'; // Adjust path
-import { Input } from '../../components/ui/input'; // Adjust path
-import { Label } from '../../components/ui/label'; // Adjust path
+import { Button } from '../../components/ui/button'; 
+import { Input } from '../../components/ui/input'; 
+import { Label } from '../../components/ui/label';
 import { useMutation } from 'react-query';
 import { toast } from 'react-hot-toast';
-import { Loader } from '../../components/ui/loader'; // Adjust path
-// import { adminGenerateParkingTicket } from '../../api/admin'; // We'll create this API call later
-
-// Dummy API call for now
+import { Loader } from '../../components/ui/loader'; 
 const adminGenerateParkingTicket = async (ticketData) => {
     console.log("Attempting to generate ticket with data:", ticketData);
-    // Simulate API call
+   
     await new Promise(resolve => setTimeout(resolve, 1500));
-    // Simulate success
+    
     if (ticketData.bookingId === "error") {
         throw new Error("Simulated: Could not find booking.");
     }
@@ -34,7 +31,7 @@ export const GenerateParkingTicketPage = () => {
             toast.success(data.message);
             setGeneratedLink(data.downloadUrl);
             setError('');
-            setBookingId(''); // Clear input after success
+            setBookingId(''); 
         },
         onError: (error) => {
             toast.error(error.message || "Failed to generate ticket. Please try again.");
@@ -51,7 +48,7 @@ export const GenerateParkingTicketPage = () => {
         }
         setError('');
         setGeneratedLink('');
-        mutation.mutate({ bookingId: bookingId.trim() /* add other necessary fields */ });
+        mutation.mutate({ bookingId: bookingId.trim()  });
     };
 
     return (
@@ -78,13 +75,7 @@ export const GenerateParkingTicketPage = () => {
                             </p>
                         </div>
 
-                        {/* You might add more fields here if needed, or fetch details based on Booking ID */}
-                        {/* For example:
-            <div className="space-y-2">
-              <Label htmlFor="vehiclePlate" className="text-sm font-medium">Vehicle Plate (Optional)</Label>
-              <Input id="vehiclePlate" type="text" placeholder="e.g., ABC-123" className="w-full" />
-            </div>
-            */}
+                      
 
                     </CardContent>
                     <CardFooter className="flex flex-col items-center space-y-4">

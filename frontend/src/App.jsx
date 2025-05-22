@@ -9,30 +9,18 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/auth-context";
 import { DashboardLayout } from "./components/layout/dashboard-layout";
 import { MyVehiclesPage } from "./pages/vehicles-page";
-
-// Auth Pages
 import { LoginPage } from "./pages/auth/login-page";
 import { RegisterPage } from "./pages/auth/register-page";
 import { ForgotPasswordPage } from "./pages/auth/forgot-password-page";
 import { ResetPasswordPage } from "./pages/auth/reset-password-page";
 import { VerifyEmailPage } from "./pages/auth/verify-email-page";
-
-// Dashboard Pages
-
 import { ProfilePage } from "./pages/profile-page";
-
 import { VehicleForm } from "./components/vehicle/vehicle-form";
-
-
-// Admin Pages
-
 import { AdminUserFormPage } from "./pages/admin/users-form-page";
 import { UserManagement } from "./pages/admin/user-management";
-
-
 import { HomePage } from "./pages/home-page";
-import { GenerateParkingTicketPage } from "./pages/admin/GenerateParkingTicketPage"
-import { ViewTicketPage } from './pages/view-ticket-page';
+import { GenerateParkingTicketPage } from "./pages/admin/GenerateParkingTicketPage";
+import { ViewTicketPage } from "./pages/view-ticket-page";
 import { AdminParkingManagementPage } from "./pages/admin/admin-parking-management-page";
 import { AdminParkingFormPage } from "./components/admin/AdminParkingFormPage.jsx";
 import { AttendantDashboardPage } from "./pages/attendant-dashboard-page.jsx";
@@ -46,7 +34,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
     },
   },
 });
@@ -57,7 +45,6 @@ export default function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Auth Routes */}
             <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register-staff" element={<RegisterPage />} />
@@ -66,13 +53,11 @@ export default function App() {
             <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/view-ticket" element={<ViewTicketPage />} />
 
-            {/* Protected Routes */}
             <Route>
               <Route path="/" element={<DashboardLayout />}>
                 <Route index element={<Navigate to="/my-vehicles" replace />} />
                 <Route path="profile" element={<ProfilePage />} />
 
-                {/* Inventory Routes */}
                 <Route path="/my-vehicles" element={<MyVehiclesPage />} />
                 <Route path="/my-vehicles/new" element={<VehicleForm />} />
                 <Route
@@ -80,23 +65,46 @@ export default function App() {
                   element={<VehicleForm isEdit={true} />}
                 />
 
-                <Route path="/attendant/view-parkings" element={<AttendantViewParkingsPage />} />
+                <Route
+                  path="/attendant/view-parkings"
+                  element={<AttendantViewParkingsPage />}
+                />
 
-                <Route path="/attendant/vehicle-entry" element={<AttendantDashboardPage />} />
+                <Route
+                  path="/attendant/vehicle-entry"
+                  element={<AttendantDashboardPage />}
+                />
 
-                <Route path="/attendant/record-exit" element={<VehicleExitPage />} />
+                <Route
+                  path="/attendant/record-exit"
+                  element={<VehicleExitPage />}
+                />
 
-                {/* Admin Routes */}
                 <Route path="admin">
                   <Route path="users" element={<UserManagement />} />
                   <Route path="reports" element={<AdminReportsPage />} />
 
-                  <Route path="parkings" element={<AdminParkingManagementPage />} />
-                  <Route path="parkings/new" element={<AdminParkingFormPage />} />
-                  <Route path="parkings/:id/edit" element={<AdminParkingFormPage isEdit={true} />} />
+                  <Route
+                    path="parkings"
+                    element={<AdminParkingManagementPage />}
+                  />
+                  <Route
+                    path="parkings/new"
+                    element={<AdminParkingFormPage />}
+                  />
+                  <Route
+                    path="parkings/:id/edit"
+                    element={<AdminParkingFormPage isEdit={true} />}
+                  />
 
-                  <Route path="generate-ticket" element={<GenerateParkingTicketPage />} />
-                  <Route path="users/new" element={<AdminUserFormPage isEdit={false} />} />
+                  <Route
+                    path="generate-ticket"
+                    element={<GenerateParkingTicketPage />}
+                  />
+                  <Route
+                    path="users/new"
+                    element={<AdminUserFormPage isEdit={false} />}
+                  />
                   <Route
                     path="users/:id/edit"
                     element={<AdminUserFormPage isEdit />}
@@ -105,7 +113,6 @@ export default function App() {
               </Route>
             </Route>
 
-            {/* Catch all - Redirect to dashboard if no route matches */}
             <Route path="*" element={<Navigate to="/my-vehicles" replace />} />
           </Routes>
         </Router>

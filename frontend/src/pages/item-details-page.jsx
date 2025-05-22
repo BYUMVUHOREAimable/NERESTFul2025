@@ -15,8 +15,7 @@ import {
   Clock,
   ImageIcon,
 } from "lucide-react";
-// import { getMyVehicleById, deleteMyVehicle } from "../api/vehicles";
-// import { getItemTransactions } from "../api/slot-requests";
+
 import { useAuth } from "../context/auth-context";
 import { Button } from "../components/ui/button";
 import {
@@ -60,12 +59,11 @@ export const ItemDetailsPage = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
 
-  // Check permissions
+  
   const canUpdateItem = user?.permissions?.includes("update_item");
   const canDeleteItem = user?.permissions?.includes("delete_item");
   const canViewTransactions = user?.permissions?.includes("read_transactions");
 
-  // Fetch item details
   const {
     data: item,
     isLoading: isLoadingItem,
@@ -78,7 +76,7 @@ export const ItemDetailsPage = () => {
     },
   });
 
-  // Fetch item transactions
+
   const {
     data: transactions = [],
     isLoading: isLoadingTransactions,
@@ -92,7 +90,7 @@ export const ItemDetailsPage = () => {
     },
   });
 
-  // Handle delete
+
   const handleDelete = async () => {
     try {
       await deleteItem(id);

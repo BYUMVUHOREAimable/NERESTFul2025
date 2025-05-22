@@ -86,7 +86,7 @@ async function main() {
     data: {
       firstName: 'Super',
       lastName: 'Admin',
-      email: process.env.ADMIN_DEFAULT_EMAIL || 'admin@parkwell.com',
+      email: process.env.ADMIN_DEFAULT_EMAIL || 'admin@XYZ LTD PMS.com',
       password: adminPassword,
       role_id: adminRole.id,
       email_verified: true, // Seeded admin is verified
@@ -100,7 +100,7 @@ async function main() {
     data: {
       firstName: 'Gate',
       lastName: 'Attendant1',
-      email: process.env.ATTENDANT_DEFAULT_EMAIL || 'attendant1@parkwell.com',
+      email: process.env.ATTENDANT_DEFAULT_EMAIL || 'attendant1@XYZ LTD PMS.com',
       password: attendantPassword,
       role_id: attendantRole.id,
       email_verified: true, // Seeded attendant is verified

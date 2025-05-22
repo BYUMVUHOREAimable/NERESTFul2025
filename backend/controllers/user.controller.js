@@ -85,7 +85,7 @@ const updateUserProfile = async (req, res) => {
       if (htmlEmail) {
           await sendEmail(
             updatedUserFromDb.email, // Send to the new email
-            'Verify Your New Email Address - ParkWell',
+            'Verify Your New Email Address - XYZ LTD PMS',
             `Your email verification code is: ${newVerificationCodeForEmail}`,
             htmlEmail
           );

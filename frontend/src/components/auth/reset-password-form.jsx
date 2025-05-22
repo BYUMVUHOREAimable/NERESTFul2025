@@ -3,14 +3,13 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
 import { toast } from "react-hot-toast";
-import { Eye, EyeOff, KeyRound, ArrowLeft, ParkingCircle } from "lucide-react";
-import { resetPassword } from "../../api/auth"; // Assuming path
-import { Input } from "../ui/input";   // Assuming path
-import { Label } from "../ui/label";   // Assuming path
-import { Button } from "../ui/button"; // Assuming path
-import { Loader } from "../ui/loader";   // Assuming path
-// import { Logo } from "../ui/logo"; // Using image logo
-import { useAuth } from "../../context/auth-context"; // Assuming path
+import { Eye, EyeOff, KeyRound, ArrowLeft } from "lucide-react";
+import { resetPassword } from "../../api/auth"; 
+import { Input } from "../ui/input";   
+import { Label } from "../ui/label";  
+import { Button } from "../ui/button"; 
+import { Loader } from "../ui/loader";   
+import { useAuth } from "../../context/auth-context";
 
 const resetPasswordSchema = z
   .object({
@@ -65,7 +64,7 @@ export const ResetPasswordForm = () => {
       const errorMsg = error.response?.data?.message || "Password reset failed. Invalid OTP or an error occurred.";
       toast.error(errorMsg);
       setGeneralError(errorMsg);
-      // Do not clear OTP, user might want to retry if it was a typo
+      
       setFormData(prev => ({ ...prev, newPassword: "", confirmPassword: "" }));
     },
   });
@@ -102,30 +101,30 @@ export const ResetPasswordForm = () => {
       setErrors(fieldErrors);
       return;
     }
-    resetMutation.mutate({ // Send the full formData including email
+    resetMutation.mutate({ 
       email: formData.email,
       otp_code: result.data.otp_code,
       newPassword: result.data.newPassword
     });
   };
 
-  if (!formData.email && !isAuthenticated) { // Added !isAuthenticated to allow render if navigating away
-    return ( /* Placeholder for redirecting if no email, handled by useEffect */
+  if (!formData.email && !isAuthenticated) { 
+    return ( 
       <div className="flex min-h-screen items-center justify-center bg-page-bg">Loading...</div>
     );
   }
 
   return (
     <div className="flex min-h-screen bg-page-bg">
-      {/* Left Visual Side */}
+      
       <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col items-center justify-center bg-golden-hour-gradient p-12 text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-72 h-72 bg-brand-yellow-light/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-yellow-dark/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
         <div className="relative z-10 text-center">
           <Link to="/" className="inline-block mb-10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-md">
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-20 w-auto mx-auto opacity-90 drop-shadow-lg" />
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-20 w-auto mx-auto opacity-90 drop-shadow-lg" />
             <h1 className="text-5xl font-bold mt-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-yellow-50 to-yellow-100 drop-shadow-sm">
-              ParkWell
+              XYZ LTD PMS
             </h1>
           </Link>
           <p className="text-xl mt-6 font-light max-w-xs sm:max-w-sm mx-auto leading-relaxed opacity-80">
@@ -138,12 +137,12 @@ export const ResetPasswordForm = () => {
         </div>
       </div>
 
-      {/* Right Form Side */}
+      
       <div className="flex flex-1 flex-col items-center justify-center p-6 sm:p-8 lg:py-12 lg:px-10 overflow-y-auto">
         <div className="w-full max-w-sm">
           <div className="flex justify-center mb-6 lg:hidden">
             <Link to="/">
-              <img src="/images/logo2.png" alt="ParkWell Logo" className="h-10 w-auto text-brand-yellow" />
+              <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-10 w-auto text-brand-yellow" />
             </Link>
           </div>
           <div className="bg-card-bg shadow-2xl rounded-xl p-8 border border-theme-border-default/20">
@@ -211,7 +210,7 @@ export const ResetPasswordForm = () => {
             </form>
           </div>
           <p className="text-center text-xs text-text-muted mt-8">
-            © {new Date().getFullYear()} ParkWell Systems.
+            © {new Date().getFullYear()} XYZ LTD PMS Systems.
           </p>
         </div>
       </div>

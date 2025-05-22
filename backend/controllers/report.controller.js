@@ -1,21 +1,18 @@
-// controllers/report.controller.js
-const prisma = require('../config/database');
-const { VehicleEntryStatus, Prisma } = require('@prisma/client'); // For enums and Decimal
 
-/**
- * (Admin) Report: Get all vehicles that exited within a specified date range.
- * Includes details like charged_amount and duration.
- */
+const prisma = require('../config/database');
+const { VehicleEntryStatus, Prisma } = require('@prisma/client'); 
+
+
 const getExitedVehiclesReport = async (req, res) => {
     try {
         const {
             page = 1,
-            limit = 15, // Default items per page for reports
+            limit = 15, 
             sortBy = 'exit_time',
             order = 'desc',
-            startDate, // Expected format: YYYY-MM-DD
-            endDate,   // Expected format: YYYY-MM-DD
-            parkingId, // Optional: filter by specific parking facility UUID
+            startDate, 
+            endDate,   
+            parkingId,
         } = req.query;
 
         const pageNum = parseInt(page, 10);
@@ -24,7 +21,7 @@ const getExitedVehiclesReport = async (req, res) => {
 
         const where = {
             status: VehicleEntryStatus.EXITED,
-            exit_time: { // Ensure exit_time is not null for exited vehicles
+            exit_time: { 
                 not: null
             }
         };
@@ -32,16 +29,15 @@ const getExitedVehiclesReport = async (req, res) => {
         if (startDate) {
             const sDate = new Date(startDate);
             if (!isNaN(sDate.getTime())) {
-                where.exit_time.gte = sDate; // Greater than or equal to start of startDate
-            } else {
+                where.exit_time.gte = sDate; 
                 return res.status(400).json({ message: "Invalid startDate format. Use YYYY-MM-DD." });
             }
         }
         if (endDate) {
             const eDate = new Date(endDate);
             if (!isNaN(eDate.getTime())) {
-                eDate.setHours(23, 59, 59, 999); // Include the whole end day
-                where.exit_time.lte = eDate; // Less than or equal to end of endDate
+                eDate.setHours(23, 59, 59, 999); 
+                where.exit_time.lte = eDate; 
             } else {
                 return res.status(400).json({ message: "Invalid endDate format. Use YYYY-MM-DD." });
             }
@@ -64,7 +60,7 @@ const getExitedVehiclesReport = async (req, res) => {
                 orderByOptions[sortBy] = order.toLowerCase() === 'asc' ? 'asc' : 'desc';
             }
         } else {
-            orderByOptions.exit_time = 'desc'; // Default sort
+            orderByOptions.exit_time = 'desc'; 
         }
 
         const exitedEntries = await prisma.vehicleEntry.findMany({
@@ -80,10 +76,10 @@ const getExitedVehiclesReport = async (req, res) => {
 
         const totalExitedEntries = await prisma.vehicleEntry.count({ where });
 
-        // Calculate summary for the current filtered set (not just current page)
+        
         const summaryAggregation = await prisma.vehicleEntry.aggregate({
             _sum: { charged_amount: true },
-            _count: { id: true }, // Or _count: { _all: true }
+            _count: { id: true }, 
             where,
         });
 
@@ -107,9 +103,7 @@ const getExitedVehiclesReport = async (req, res) => {
     }
 };
 
-/**
- * (Admin) Report: Get all vehicles that entered within a specified date range.
- */
+
 const getEnteredVehiclesReport = async (req, res) => {
     try {
         const {
@@ -117,9 +111,9 @@ const getEnteredVehiclesReport = async (req, res) => {
             limit = 15,
             sortBy = 'entry_time',
             order = 'desc',
-            startDate, // Expected format: YYYY-MM-DD
-            endDate,   // Expected format: YYYY-MM-DD
-            parkingId, // Optional: filter by specific parking facility UUID
+            startDate, 
+            endDate,   
+            parkingId, 
         } = req.query;
 
         const pageNum = parseInt(page, 10);
@@ -127,7 +121,7 @@ const getEnteredVehiclesReport = async (req, res) => {
         const skip = (pageNum - 1) * limitNum;
 
         const where = {
-            entry_time: {} // Initialize for date filtering
+            entry_time: {} 
         };
 
         if (startDate) {

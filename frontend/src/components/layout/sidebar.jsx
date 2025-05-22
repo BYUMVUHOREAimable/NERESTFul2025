@@ -2,114 +2,76 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/auth-context"; // Ensure path is correct
 import {
   ChevronLeft, ChevronRight, LayoutDashboard, Users, UserCircle2, LogOut, X,
-  CarFront, // Icon for Vehicle Entry/Exit (Attendant)
-  ParkingSquare, // Icon for Parking Facilities (Admin)
-  ListOrdered, // Icon for Currently Parked (Attendant) or All Entries (Admin)
-  FileText, // Icon for Reports (Admin)
+  CarFront,
+  ParkingSquare,
+  ListOrdered,
+  FileText,
   Settings,
-  ClipboardList, // Placeholder
+  ClipboardList, 
 } from "lucide-react";
-import { Button } from "../ui/button"; // Ensure path is correct
-import { Logo } from "../ui/logo";   // Ensure path is correct
-import { cn } from "../../lib/utils"; // Ensure path is correct
+import { Button } from "../ui/button"; 
+import { Logo } from "../ui/logo";   
+import { cn } from "../../lib/utils"; 
 
 export const Sidebar = ({ onClose, collapsed, onToggleCollapse }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth(); // user should have { id, firstName, lastName, role, permissions: [...] }
-
-  // Helper to check permissions
+  const { user, logout } = useAuth(); 
+ 
   const hasPermission = (permissionKey) => {
-    // console.log("Checking permission:", permissionKey, "User permissions:", user?.permissions);
+
     return user?.permissions?.includes(permissionKey);
   };
 
   const isAdmin = user?.role === "ADMIN";
   const isAttendant = user?.role === "PARKING_ATTENDANT";
 
-  // --- Navigation Items for Parking Attendant System ---
+  
   const navigationItems = [
-    // --- Common for All Staff ---
-    // {
-    //   name: "Dashboard", // General landing page after login
-    //   icon: <LayoutDashboard className="h-5 w-5" />,
-    //   href: "/attendant/dashboard", // A generic staff dashboard
-    //   visible: true, // Visible to both admin and attendant
-    // },
-
-    // --- Parking Attendant Specific ---
+    
     {
       name: "Vehicle Entry",
-      icon: <CarFront className="h-5 w-5" />, // Or 'LogIn' with different meaning
-      href: "/attendant/vehicle-entry", // Page for attendant to record entry
+      icon: <CarFront className="h-5 w-5" />, 
+      href: "/attendant/vehicle-entry", 
       visible: isAttendant && hasPermission("record_vehicle_entry"),
     },
 
-    // {
-    //   name: "Vehicle Exit",
-    //   icon: <LogOut className="h-5 w-5 transform scale-x-[-1]" />, // Flipped LogOut or 'LogOut' + 'Car'
-    //   href: "/attendant/vehicle-exit", // Page for attendant to record exit
-    //   visible: isAttendant && hasPermission("record_vehicle_exit"),
-    // },
-    // {
-    //   name: "Currently Parked",
-    //   icon: <ListOrdered className="h-5 w-5" />,
-    //   href: "/attendant/currently-parked",
-    //   visible: isAttendant && hasPermission("view_current_parked_vehicles"),
-    // },
+  
     {
-      name: "View Parkings", // Attendant's view of all parking facilities
-      icon: <ParkingSquare className="h-5 w-5 opacity-80" />, // Can use same or slightly different icon
+      name: "View Parkings", 
+      icon: <ParkingSquare className="h-5 w-5 opacity-80" />,
       href: "/attendant/view-parkings",
       visible: isAttendant && hasPermission("view_all_parkings_details"),
     },
 
-    // --- Admin Specific ---
-    // {
-    //   name: "Manage Users", // Staff users (Admins, Attendants)
-    //   icon: <Users className="h-5 w-5" />,
-    //   href: "/admin/users",
-    //   visible: isAdmin && hasPermission("manage_users"),
-    // },
+    
     {
-      name: "Manage Parkings", // Parking Facilities/Zones
+      name: "Manage Parkings",
       icon: <ParkingSquare className="h-5 w-5" />,
-      href: "/admin/parkings", // This is the route you want to access
-      visible: isAdmin && hasPermission("manage_parkings"), // <<< CHECK THIS PERMISSION
+      href: "/admin/parkings",
+      visible: isAdmin && hasPermission("manage_parkings"),
     },
-    // {
-    //   name: "All Vehicle Entries", // Admin view of all historical/current entries
-    //   icon: <ClipboardList className="h-5 w-5" />,
-    //   href: "/admin/vehicle-entries",
-    //   visible: isAdmin && hasPermission("view_all_vehicle_entries"),
-    // },
+    
     {
       name: "Record Exit / Parked",
-      icon: <ListOrdered className="h-5 w-5" />, // Or VehicleExitIcon
+      icon: <ListOrdered className="h-5 w-5" />,
       href: "/attendant/record-exit",
       visible: isAttendant && (hasPermission("view_current_parked_vehicles") || hasPermission("record_vehicle_exit")),
     },
     {
       name: "Reports",
       icon: <FileText className="h-5 w-5" />,
-      href: "/admin/reports", // Main reports page, then sub-routes for specific reports
+      href: "/admin/reports", 
       visible: isAdmin && hasPermission("view_system_reports"),
     },
-    // {
-    //   name: "Audit Logs", // If you re-add logging
-    //   icon: <ClipboardList className="h-5 w-5" />,
-    //   href: "/admin/logs",
-    //   visible: isAdmin && hasPermission("view_audit_logs"),
-    // },
-
-    // --- Common Profile ---
+   
     {
       name: "My Profile",
       icon: <UserCircle2 className="h-5 w-5" />,
       href: "/profile",
-      visible: hasPermission("manage_own_profile"), // All staff can manage their profile
+      visible: hasPermission("manage_own_profile"),
     },
-    // { name: "Settings", icon: <Settings className="h-5 w-5" />, href: "/staff/settings", visible: true },
+    
   ];
 
   const visibleItems = navigationItems.filter((item) => item.visible);
@@ -125,13 +87,13 @@ export const Sidebar = ({ onClose, collapsed, onToggleCollapse }) => {
     <div className="flex flex-col h-full bg-card-bg shadow-lg border-r border-theme-border-default relative">
       <div className={cn("flex items-center justify-between h-16 border-b border-theme-border-default bg-card-bg", collapsed ? "px-2" : "px-4")}>
         {!collapsed ? (
-          <div className="flex items-center cursor-pointer" onClick={() => navigate(isAdmin ? '/admin/dashboard' : '/staff/dashboard')}> {/* Dynamic dashboard link */}
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-8 w-auto mr-2" /> {/* Using img tag for logo */}
-            <span className="text-xl font-bold text-text-main">ParkWell</span>
+          <div className="flex items-center cursor-pointer" onClick={() => navigate(isAdmin ? '/admin/dashboard' : '/staff/dashboard')}>
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-8 w-auto mr-2" /> 
+            <span className="text-xl font-bold text-text-main">XYZ LTD PMS</span>
           </div>
         ) : (
           <div className="cursor-pointer" onClick={() => navigate(isAdmin ? '/admin/dashboard' : '/staff/dashboard')}>
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-8 w-8 mx-auto" />
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-8 w-8 mx-auto" />
           </div>
         )}
         <Button variant="ghost" size="icon" onClick={onClose} className="lg:hidden rounded-md p-0 h-8 w-8 text-text-muted hover:bg-input-bg">
@@ -146,9 +108,9 @@ export const Sidebar = ({ onClose, collapsed, onToggleCollapse }) => {
       <nav className="flex-1 overflow-y-auto py-4 px-2.5">
         <ul className="space-y-1.5">
           {visibleItems.map((item) => {
-            const baseHref = item.href.split("?")[0]; // Get path without query params
+            const baseHref = item.href.split("?")[0]; 
             const isActive = location.pathname === baseHref || (location.pathname.startsWith(baseHref) && baseHref !== "/");
-            // Special case for dashboard to avoid matching everything
+           
             const isDashboardActive = item.href.includes("dashboard") && location.pathname === item.href;
             const finalIsActive = item.href.includes("dashboard") ? isDashboardActive : isActive;
 
@@ -160,7 +122,7 @@ export const Sidebar = ({ onClose, collapsed, onToggleCollapse }) => {
                     "w-full flex items-center gap-x-3 font-medium rounded-lg text-sm transition-all duration-150 ease-in-out group",
                     collapsed ? "justify-center px-2 h-10" : "justify-start px-3 h-10",
                     finalIsActive
-                      ? "bg-brand-yellow/15 text-brand-yellow hover:bg-brand-yellow/25 font-semibold" // Enhanced active state
+                      ? "bg-brand-yellow/15 text-brand-yellow hover:bg-brand-yellow/25 font-semibold"
                       : "text-text-muted hover:bg-input-bg hover:text-text-main"
                   )}
                   onClick={() => { navigate(item.href); if (onClose && window.innerWidth < 1024) onClose(); }}
@@ -170,12 +132,7 @@ export const Sidebar = ({ onClose, collapsed, onToggleCollapse }) => {
                     {item.icon}
                   </span>
                   {!collapsed && <span className="whitespace-nowrap">{item.name}</span>}
-                  {/* {finalIsActive && !collapsed && (
-                    <span className="absolute right-0 w-[3px] h-2/3 top-1/2 -translate-y-1/2 bg-brand-yellow rounded-l-full"></span>
-                  )}
-                  {finalIsActive && collapsed && (
-                    <span className="absolute left-0 w-[3px] h-2/3 top-1/2 -translate-y-1/2 bg-brand-yellow rounded-r-full"></span>
-                  )} */}
+                 
                 </Button>
               </li>
             );

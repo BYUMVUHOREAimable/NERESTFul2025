@@ -24,7 +24,6 @@ import {
   CardDescription,
 } from "../../components/ui/card";
 import { Loader } from "../../components/ui/loader";
-// No Select needed for enums here unless you add a 'type' to Parking model itself
 
 // Validation schema for Parking Facility
 const parkingFacilitySchema = z.object({
@@ -44,11 +43,11 @@ const parkingFacilitySchema = z.object({
     (val) => (val === "" || val === null || val === undefined ? null : parseFloat(String(val))),
     z.number({ invalid_type_error: "Charge must be a number." })
       .min(0, "Charge cannot be negative.")
-      .max(1000, "Charge seems too high.") // Example max
-      // Making it non-nullable as per schema, ensure UI provides a default if needed or schema changes
+      .max(1000, "Charge seems too high.")
+      
       .refine(val => val !== null, { message: "Charge per hour is required." })
   ),
-  // occupied_spaces is usually managed by system, not directly in this form
+
 });
 
 export const AdminParkingFormPage = ({ isEdit }) => {
@@ -89,13 +88,13 @@ export const AdminParkingFormPage = ({ isEdit }) => {
   const mutationOptions = {
     onSuccess: () => {
       toast.success(`Parking facility ${isEdit ? "updated" : "created"} successfully!`);
-      queryClient.invalidateQueries("adminParkingFacilities"); // Query key for the list
+      queryClient.invalidateQueries("adminParkingFacilities");
       navigate("/admin/parkings");
     },
     onError: (error) => {
       const errorMsg = error.response?.data?.message || `Failed to ${isEdit ? "update" : "create"} facility.`;
       toast.error(errorMsg);
-      if (error.response?.data?.errors) { // If backend provides field-specific errors
+      if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
         setErrors({ general: errorMsg });
@@ -120,7 +119,7 @@ export const AdminParkingFormPage = ({ isEdit }) => {
     const dataToValidate = {
       ...formData,
       location: formData.location.trim() === "" ? null : formData.location.trim(),
-      // charge_per_hour will be preprocessed by Zod
+      
     };
 
     const result = parkingFacilitySchema.safeParse(dataToValidate);
@@ -135,8 +134,7 @@ export const AdminParkingFormPage = ({ isEdit }) => {
 
     const finalPayload = {
       ...result.data,
-      code: result.data.code.toUpperCase(), // Ensure code is uppercase
-      // total_spaces and charge_per_hour are already numbers due to Zod preprocess/number
+      code: result.data.code.toUpperCase(), 
     };
 
     if (isEdit) {

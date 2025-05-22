@@ -34,14 +34,14 @@ npm run dev
 #### Admin Access
 | Field    | Value                |
 |----------|---------------------|
-| Email    | admin@parkwell.com  |
+| Email    | admin@gmail.com  |
 | Password | adminpass123        |
 | Role     | Admin               |
 
 #### Attendant Access
 | Field    | Value                  |
 |----------|-----------------------|
-| Email    | attendant1@parkwell.com|
+| Email    | attendant1@gmail.com|
 | Password | attendpass123         |
 | Role     | Parking Attendant     |
 

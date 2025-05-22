@@ -21,7 +21,7 @@ const HeroIllustration = () => (
 
 // Placeholder for testimonial data
 const testimonials = [
-  { id: 1, name: "Sarah L.", role: "Daily Commuter", quote: "ParkWell made my city parking stress-free! Finding a spot is now a breeze.", avatar: "/images/sarah.jpg" },
+  { id: 1, name: "Sarah L.", role: "Daily Commuter", quote: "XYZ LTD PMS made my city parking stress-free! Finding a spot is now a breeze.", avatar: "/images/sarah.jpg" },
   { id: 2, name: "Vannnessa J..", role: "Business Owner", quote: "Managing parking for my employees has never been easier or more efficient. Highly recommend!", avatar: "/images/vannessa.jpg" },
   { id: 3, name: "Maria K.", role: "Weekend Explorer", quote: "Love the futuristic feel and how quickly I can reserve a spot. The yellow theme is so cheerful!", avatar: "/images/maria.jpg" },
 ];
@@ -43,8 +43,8 @@ export const HomePage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <Link to="/" className="flex items-center">
-              <img src="/images/logo2.png" alt="ParkWell Logo" className="h-10 w-auto mr-2" />
-              <span className="text-3xl font-bold tracking-tight text-brand-yellow">ParkWell</span>
+              <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-10 w-auto mr-2" />
+              <span className="text-3xl font-bold tracking-tight text-brand-yellow">XYZ PARKING MANAGEMENT SYSTEM</span>
             </Link>
             <div className="flex items-center space-x-3 sm:space-x-5">
               <Link to="/login" className="text-sm font-medium text-text-main hover:text-link transition-colors px-3 py-2 rounded-md">
@@ -72,7 +72,7 @@ export const HomePage = () => {
               <span className="block text-brand-yellow">Not Harder.</span>
             </h1>
             <p className="mt-6 max-w-xl mx-auto text-lg text-text-muted sm:text-xl md:text-2xl leading-relaxed">
-              Discover ParkWell: Your intuitive, secure, and efficient solution for finding and managing parking spaces. Say goodbye to parking hassles.
+              Discover XYZ LTD PMS: Your intuitive, secure, and efficient solution for finding and managing parking spaces. Say goodbye to parking hassles.
             </p>
             <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center">
               <Link
@@ -92,7 +92,7 @@ export const HomePage = () => {
         <section className="py-16 sm:py-24 bg-card-bg border-t border-b border-theme-border-default/50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-base font-semibold text-brand-yellow tracking-wide uppercase">Why ParkWell?</h2>
+              <h2 className="text-base font-semibold text-brand-yellow tracking-wide uppercase">Why XYZ LTD PMS?</h2>
               <p className="mt-2 text-3xl lg:text-4xl font-extrabold tracking-tight text-text-main">
                 The Future of Parking is Here
               </p>
@@ -180,7 +180,7 @@ export const HomePage = () => {
               Ready to Simplify Your Parking?
             </h2>
             <p className="mt-4 text-lg leading-6 text-text-muted max-w-2xl mx-auto">
-              Join ParkWell today and experience the difference. Quick registration, easy slot finding, and stress-free parking management.
+              Join XYZ LTD PMS today and experience the difference. Quick registration, easy slot finding, and stress-free parking management.
             </p>
             <div className="mt-8">
               <Link
@@ -199,7 +199,7 @@ export const HomePage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-brand-yellow tracking-wider uppercase">ParkWell</h3>
+              <h3 className="text-sm font-semibold text-brand-yellow tracking-wider uppercase">XYZ LTD PMS</h3>
               <ul role="list" className="mt-4 space-y-2">
                 <li><Link to="/about" className="text-xs hover:text-brand-yellow-light transition-colors">About Us</Link></li>
                 <li><Link to="/careers" className="text-xs hover:text-brand-yellow-light transition-colors">Careers</Link></li>
@@ -222,7 +222,7 @@ export const HomePage = () => {
             {/* Social Media or App Store Links can go here */}
           </div>
           <div className="mt-10 border-t border-page-bg/10 pt-8 text-center">
-            <p className="text-xs">© {new Date().getFullYear()} ParkWell Systems. All rights reserved.</p>
+            <p className="text-xs">© {new Date().getFullYear()} XYZ LTD PMS Systems. All rights reserved.</p>
           </div>
         </div>
       </footer>

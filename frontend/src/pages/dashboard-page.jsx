@@ -12,8 +12,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
-// import { getAllItems } from "../api/vehicles";
-// import { getAllTransactions } from "../api/slot-requests";
+
 import { getInventorySummary } from "../api/reports";
 import {
   Card,
