@@ -17,24 +17,14 @@ const fonts = {
 
 const printer = new PdfPrinter(fonts);
 
-/**
- * Generates a parking ticket PDF buffer.
- * @param {object} ticketData - Data for the ticket.
- * @param {object} ticketData.user - { name, email }
- * @param {object} ticketData.vehicle - { plate_number, vehicle_type, size }
- * @param {object} ticketData.parkingSlot - { slot_number, location, cost_per_hour }
- * @param {object} ticketData.slotRequest - { id (for ticket number), expected_duration_hours, calculated_cost, requested_at, resolved_at }
- * @param {string} ticketData.appName - Your application name (e.g., "ParkWell Systems")
- * @returns {Promise<Buffer>} - A promise that resolves with the PDF buffer.
- */
+
 const generateParkingTicketPdf = async (ticketData) => {
     return new Promise((resolve, reject) => {
-        const { user, vehicle, parkingSlot, slotRequest, appName = "ParkWell Systems" } = ticketData;
+        const { user, vehicle, parkingSlot, slotRequest, appName = "XYZ LTD PM Systems" } = ticketData;
 
         const requestDate = slotRequest.requested_at ? new Date(slotRequest.requested_at).toLocaleString() : 'N/A';
         const approvalDate = slotRequest.resolved_at ? new Date(slotRequest.resolved_at).toLocaleString() : 'N/A';
-        const ticketNumber = slotRequest.id.substring(0, 8).toUpperCase(); // Use part of UUID as ticket number
-
+        const ticketNumber = slotRequest.id.substring(0, 8).toUpperCase(); 
         const documentDefinition = {
             content: [
                 { text: appName, style: 'header', alignment: 'center' },
@@ -97,22 +87,22 @@ const generateParkingTicketPdf = async (ticketData) => {
                     margin: [0, 5, 0, 20],
                 },
 
-                { text: 'Thank you for using ParkWell Systems!', style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] },
+                { text: 'Thank you for using XYZ LTD PMS Systems!', style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] },
                 { text: 'Please keep this ticket for your records. Valid for the specified duration.', style: 'finePrint', alignment: 'center' },
             ],
             styles: {
-                header: { fontSize: 24, bold: true, margin: [0, 0, 0, 5], color: '#2C3340' /* --theme-text-primary approx */ },
-                subheader: { fontSize: 16, bold: false, margin: [0, 0, 0, 15], color: '#596070' /* --theme-text-secondary approx */ },
+                header: { fontSize: 24, bold: true, margin: [0, 0, 0, 5], color: '#2C3340'  },
+                subheader: { fontSize: 16, bold: false, margin: [0, 0, 0, 15], color: '#596070'  },
                 sectionHeader: { fontSize: 14, bold: true, margin: [0, 10, 0, 5], color: '#2C3340' },
                 info: { fontSize: 10, margin: [0, 0, 0, 3], color: '#596070' },
                 infoBold: { fontSize: 10, bold: true, margin: [0, 0, 0, 3], color: '#2C3340' },
                 tableLabel: { bold: false, color: '#596070', margin: [0, 0, 5, 0] },
                 tableLabelBold: { bold: true, color: '#2C3340', margin: [0, 0, 5, 0] },
                 footer: { fontSize: 10, italics: true, color: '#596070' },
-                finePrint: { fontSize: 8, color: '#8C919E' /* --theme-text-placeholder approx */, margin: [0, 5, 0, 0] }
+                finePrint: { fontSize: 8, color: '#8C919E' , margin: [0, 5, 0, 0] }
             },
             defaultStyle: {
-                font: 'Roboto', // Use the font defined above
+                font: 'Roboto', 
                 fontSize: 10,
                 lineHeight: 1.3,
             },
@@ -133,7 +123,7 @@ const generateParkingTicketPdf = async (ticketData) => {
 
 const generateEntryTicketPdf = async (entryData) => {
     return new Promise((resolve, reject) => {
-        const { plate_number, ticket_number, entry_time, parking, attendantName, appName = "ParkWell Systems" } = entryData;
+        const { plate_number, ticket_number, entry_time, parking, attendantName, appName = "XYZ LTD PM Systems" } = entryData;
 
         const entryTimeString = entry_time ? new Date(entry_time).toLocaleString() : 'N/A';
 
@@ -151,7 +141,7 @@ const generateEntryTicketPdf = async (entryData) => {
                 },
                 {
                     columns: [
-                        { width: '*', text: '' }, // Empty column for spacing
+                        { width: '*', text: '' }, 
                         { width: 'auto', text: `Time: ${new Date(entry_time).toLocaleTimeString()}`, style: 'infoRight' }
                     ],
                     margin: [0, 0, 0, 20]
@@ -196,8 +186,8 @@ const generateEntryTicketPdf = async (entryData) => {
 
             ],
             styles: {
-                header: { fontSize: 22, bold: true, margin: [0, 0, 0, 0], color: '#1E2433' /* Darker text */ },
-                subheader: { fontSize: 16, bold: true, margin: [0, 0, 0, 15], color: '#D99407' /* Darker Yellow */ },
+                header: { fontSize: 22, bold: true, margin: [0, 0, 0, 0], color: '#1E2433'  },
+                subheader: { fontSize: 16, bold: true, margin: [0, 0, 0, 15], color: '#D99407'  },
                 sectionHeader: { fontSize: 12, bold: true, margin: [0, 10, 0, 3], color: '#282E38' },
                 ticketNumber: { fontSize: 14, bold: true, color: '#1E2433' },
                 infoRight: { fontSize: 10, alignment: 'right', color: '#545B69' },
@@ -231,12 +221,12 @@ const generateEntryTicketPdf = async (entryData) => {
 
 const generateExitBillPdf = async (billData) => {
     return new Promise((resolve, reject) => {
-        const { processedByForDisplay, vehicleEntry, appName = "ParkWell Systems" } = billData;
+        const { processedByForDisplay, vehicleEntry, appName = "XYZ LTD PM Systems" } = billData;
 
         const entryTime = vehicleEntry.entry_time ? new Date(vehicleEntry.entry_time).toLocaleString() : 'N/A';
         const exitTime = vehicleEntry.exit_time ? new Date(vehicleEntry.exit_time).toLocaleString() : 'N/A';
         const durationMinutes = vehicleEntry.calculated_duration_minutes || 0;
-        const durationHours = Math.ceil(durationMinutes / 60); // Bill for full hours or parts thereof
+        const durationHours = Math.ceil(durationMinutes / 60); 
 
         const attendantName = `${processedByForDisplay?.firstName || ''} ${processedByForDisplay?.lastName || ''}`.trim() || 'System';
 
@@ -293,12 +283,12 @@ const generateExitBillPdf = async (billData) => {
                 { qr: `BillForTicketNo:${vehicleEntry.ticket_number},Plate:${vehicleEntry.plate_number},Amount:${vehicleEntry.charged_amount || 0}`, fit: '80', alignment: 'center', margin: [0, 0, 0, 20] },
 
 
-                { text: 'Thank you for parking with ParkWell Systems!', style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] },
+                { text: 'Thank you for parking with XYZ LTD PM Systems!', style: 'footer', alignment: 'center', margin: [0, 20, 0, 0] },
                 { text: 'Please retain this bill for your records.', style: 'finePrint', alignment: 'center' },
                 { text: `Processed by: ${attendantName}`, style: 'footerInfo', alignment: 'left', margin: [0, 20, 0, 0] },
                 { text: `Powered by ${appName}`, style: 'footerInfo', alignment: 'right' },
             ],
-            styles: { // Reuse or adapt styles from generateEntryTicketPdf
+            styles: { 
                 header: { fontSize: 22, bold: true, margin: [0, 0, 0, 0], color: '#1E2433' },
                 subheader: { fontSize: 16, bold: true, margin: [0, 0, 0, 15], color: '#DAA520' },
                 sectionHeader: { fontSize: 12, bold: true, margin: [0, 10, 0, 3], color: '#282E38' },

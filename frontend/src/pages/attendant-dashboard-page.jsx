@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { DownloadCloud, CheckCircle, ParkingSquare, CarFront as VehicleIcon } from "lucide-react"; // Added icons
-import { VehicleEntryForm } from "../components/attendant/vehicle-entry-form"; // Adjust path
+import { DownloadCloud, CheckCircle, ParkingSquare, CarFront as VehicleIcon } from "lucide-react";
+import { VehicleEntryForm } from "../components/attendant/vehicle-entry-form";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
-import { EmptyState } from "../components/ui/empty-state"; // Placeholder for empty state component
+import { EmptyState } from "../components/ui/empty-state";
 import { useAuth } from "../context/auth-context";
-// Placeholder for future CurrentlyParkedVehiclesList
-// import { CurrentlyParkedVehiclesList } from "../../components/attendant/currently-parked-list";
+
+
+
 
 export const AttendantDashboardPage = () => {
     const { user } = useAuth();
     const [lastEntryResult, setLastEntryResult] = useState(null);
 
     const canRecordEntry = user?.permissions?.includes("record_vehicle_entry");
-    // const canViewCurrentlyParked = user?.permissions?.includes("view_current_parked_vehicles");
 
-    const handleEntrySuccess = (data) => { // This function is passed to VehicleEntryForm
-        setLastEntryResult(data); // data = { message, vehicleEntry, ticketDownloadUrl }
+
+    const handleEntrySuccess = (data) => {
+        setLastEntryResult(data);
     };
 
-    if (!canRecordEntry) { // Basic check, could be expanded based on more attendant roles
+    if (!canRecordEntry) {
         return (
             <div className="container mx-auto py-10 text-center text-destructive">
                 You do not have sufficient permissions for attendant operations.
@@ -43,7 +44,6 @@ export const AttendantDashboardPage = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                {/* Vehicle Entry Section */}
                 <section>
                     <VehicleEntryForm onSuccessRecord={handleEntrySuccess} />
                     {lastEntryResult && lastEntryResult.vehicleEntry && (
@@ -79,7 +79,6 @@ export const AttendantDashboardPage = () => {
                     )}
                 </section>
 
-                {/* Currently Parked Vehicles Section (Placeholder for next feature) */}
                 <section>
                     <Card className="bg-card-bg border border-theme-border-default shadow-xl rounded-xl">
                         <CardHeader className="pb-4 border-b border-theme-border-input">
@@ -92,7 +91,7 @@ export const AttendantDashboardPage = () => {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pt-6">
-                            {/* {canViewCurrentlyParked ? <CurrentlyParkedVehiclesList /> : <p>No permission.</p>} */}
+
                             <EmptyState
                                 icon={<VehicleIcon className="h-12 w-12 text-text-placeholder opacity-70" />}
                                 title="Vehicle Exit & List"

@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Plus, Search, Edit, Trash2, MoreHorizontal, ArrowUpDown, ParkingSquare, DollarSign } from "lucide-react";
-import { adminGetAllParkings, adminDeleteParking } from "../../api/admin-parkings"; // Adjust path
+import { adminGetAllParkings, adminDeleteParking } from "../../api/admin-parkings";
 import { useAuth } from "../../context/auth-context";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { Button } from "../../components/ui/button";
@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Loader } from "../../components/ui/loader";
 import { Pagination } from "../../components/ui/pagination";
 import { EmptyState } from "../../components/ui/empty-state";
-import { Badge } from "../../components/ui/badge"; // If displaying occupancy status as badge
+
 
 export const AdminParkingManagementPage = () => {
     const navigate = useNavigate();

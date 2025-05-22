@@ -1,1206 +1,20 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "ParkWell - Parking Attendant System API",
-    "description": "API documentation for the ParkWell system, for administrators and parking attendants.",
+    "title": "XYZ LTD Premium Parking Management System",
     "version": "1.1.0",
+    "description": "Comprehensive API documentation for the XYZ LTD Premium Parking Management System (PMS). This API enables administrators and parking attendants to efficiently manage parking operations, vehicle entries/exits, and facility management.",
     "contact": {
-      "name": "ParkWell Support",
-      "email": "support@parkwell.example.com"
+      "name": "XYZ LTD Premium Support",
+      "email": "premium.support@xyz.com"
     }
   },
   "servers": [
     {
       "url": "http://localhost:5000/api/v1",
-      "description": "Development Server (v1)"
+      "description": "Development server"
     }
   ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
-  "tags": [
-    {
-      "name": "Authentication (Staff)",
-      "description": "Staff authentication, registration, and profile management"
-    },
-    {
-      "name": "Admin - Staff Management",
-      "description": "Staff (User) account management by Administrators"
-    },
-    {
-      "name": "Admin - Parking Facility Management",
-      "description": "Management of parking facilities/zones by Administrators"
-    },
-    {
-      "name": "Admin - Roles & Permissions",
-      "description": "Viewing roles and permissions"
-    },
-    {
-      "name": "Admin - Reports",
-      "description": "System reports for administrators"
-    },
-    {
-      "name": "Vehicle Operations (Attendant/Admin)",
-      "description": "Recording vehicle entries and exits, ticket/bill generation"
-    },
-    {
-      "name": "Parking Facilities (General Listing)",
-      "description": "Endpoints for listing parking facilities"
-    }
-  ],
-  "paths": {
-    "/auth/register-staff": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Register a new staff member",
-        "operationId": "registerStaff",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StaffRegisterRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Staff account created. Verification email sent.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "userId": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/auth/verify-email": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Verify staff email address",
-        "operationId": "verifyStaffEmail",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyEmailRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Email verified successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/auth/login": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Login staff member",
-        "operationId": "loginStaff",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Login successful.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginSuccessResponseStaff"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/auth/logout": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Logout staff member",
-        "operationId": "logoutStaff",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Logged out.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      }
-    },
-    "/auth/me": {
-      "get": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Get current staff user profile",
-        "operationId": "getCurrentStaffUser",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Current staff user details.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrentStaffUserResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/auth/forgot-password": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Request staff password reset OTP",
-        "operationId": "forgotStaffPassword",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ForgotPasswordRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OTP request acknowledged.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          }
-        }
-      }
-    },
-    "/auth/reset-password": {
-      "post": {
-        "tags": [
-          "Authentication (Staff)"
-        ],
-        "summary": "Reset staff password using OTP",
-        "operationId": "resetStaffPassword",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPasswordRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Password reset successful.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          }
-        }
-      }
-    },
-    "/staff/profile": {
-      "put": {
-        "tags": [
-          "Staff Profile"
-        ],
-        "summary": "Update own staff profile",
-        "operationId": "updateOwnStaffProfile",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateStaffProfileRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Profile updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "user": {
-                      "$ref": "#/components/schemas/StaffUserMinimumResponse"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/admin/users": {
-      "get": {
-        "tags": [
-          "Admin - Staff Management"
-        ],
-        "summary": "List all staff users",
-        "operationId": "adminGetAllStaffUsers",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/PageQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/LimitQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/SearchStaffQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/SortByStaffQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/OrderQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/RoleFilterQueryParam"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of staff users.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminStaffUserListResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Admin - Staff Management"
-        ],
-        "summary": "Create a new staff user",
-        "operationId": "adminCreateStaffUser",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminCreateStaffRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Staff user created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminStaffUserResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/admin/users/{id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/IdPathParamUuid"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Admin - Staff Management"
-        ],
-        "summary": "Get staff user by ID",
-        "operationId": "adminGetStaffUserById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Staff user details.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminStaffUserResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Admin - Staff Management"
-        ],
-        "summary": "Update staff user by ID",
-        "operationId": "adminUpdateStaffUserById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateStaffRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminStaffUserResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Staff Management"
-        ],
-        "summary": "Delete staff user by ID",
-        "operationId": "adminDeleteStaffUserById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/admin/roles": {
-      "get": {
-        "tags": [
-          "Admin - Roles & Permissions"
-        ],
-        "summary": "List all roles",
-        "operationId": "adminGetAllRoles",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of roles.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RoleResponse"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/admin/permissions": {
-      "get": {
-        "tags": [
-          "Admin - Roles & Permissions"
-        ],
-        "summary": "List all permissions",
-        "operationId": "adminGetAllPermissions",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of permissions.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PermissionResponse"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/parkings": {
-      "post": {
-        "tags": [
-          "Admin - Parking Facility Management"
-        ],
-        "summary": "Create a parking facility",
-        "operationId": "adminCreateParking",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateParkingFacilityRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Parking facility created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ParkingFacilityResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Parking Facilities (General Listing)",
-          "Admin - Parking Facility Management"
-        ],
-        "summary": "List parking facilities",
-        "description": "Admins see all details. Attendants with 'view_all_parkings_details' can also use this for a detailed view.",
-        "operationId": "listAllParkingFacilities",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/PageQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/LimitQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/SearchParkingsQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/SortByParkingsQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/OrderQueryParam"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of parking facilities.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ParkingFacilityListResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/parkings/selectable": {
-      "get": {
-        "tags": [
-          "Parking Facilities (General Listing)",
-          "Vehicle Operations (Attendant/Admin)"
-        ],
-        "summary": "List selectable parking facilities",
-        "description": "For populating dropdowns, typically for attendants/admins.",
-        "operationId": "listSelectableParkings",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/LimitQueryParamSelectable"
-          },
-          {
-            "$ref": "#/components/parameters/SearchParkingsQueryParam"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of selectable parkings.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SelectableParkingListResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/parkings/{id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/IdPathParamUuid"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Admin - Parking Facility Management"
-        ],
-        "summary": "Get parking facility by ID",
-        "operationId": "adminGetParkingById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Parking facility details.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ParkingFacilityResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Admin - Parking Facility Management"
-        ],
-        "summary": "Update parking facility by ID",
-        "operationId": "adminUpdateParkingById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateParkingFacilityRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Parking facility updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ParkingFacilityResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Parking Facility Management"
-        ],
-        "summary": "Delete parking facility by ID",
-        "operationId": "adminDeleteParkingById",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Parking facility deleted.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessMessageResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/vehicle-entries/enter": {
-      "post": {
-        "tags": [
-          "Vehicle Operations (Attendant/Admin)"
-        ],
-        "summary": "Record vehicle entry",
-        "operationId": "recordVehicleEntry",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecordVehicleEntryRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Vehicle entry recorded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VehicleEntryResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/vehicle-entries/{entryId}/entry-ticket": {
-      "parameters": [
-        {
-          "name": "entryId",
-          "in": "path",
-          "required": true,
-          "description": "UUID of the Vehicle Entry",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      ],
-      "get": {
-        "tags": [
-          "Public Tickets & Bills"
-        ],
-        "summary": "Download entry ticket PDF (Public)",
-        "operationId": "downloadEntryTicket",
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "PDF ticket file.",
-            "content": {
-              "application/pdf": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/vehicle-entries/{vehicleEntryId}/exit": {
-      "parameters": [
-        {
-          "name": "vehicleEntryId",
-          "in": "path",
-          "required": true,
-          "description": "UUID of the Vehicle Entry to exit",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      ],
-      "post": {
-        "tags": [
-          "Vehicle Operations (Attendant/Admin)"
-        ],
-        "summary": "Record vehicle exit",
-        "operationId": "recordVehicleExit",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Vehicle exit recorded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VehicleExitResponseWrapper"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      }
-    },
-    "/vehicle-entries/{entryId}/exit-bill": {
-      "parameters": [
-        {
-          "name": "entryId",
-          "in": "path",
-          "required": true,
-          "description": "UUID of the Vehicle Entry for the bill",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      ],
-      "get": {
-        "tags": [
-          "Public Tickets & Bills"
-        ],
-        "summary": "Download exit bill PDF (Public)",
-        "operationId": "downloadExitBill",
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "PDF bill file.",
-            "content": {
-              "application/pdf": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/admin/reports/exited-vehicles": {
-      "get": {
-        "tags": [
-          "Admin - Reports"
-        ],
-        "summary": "Get exited vehicles report",
-        "operationId": "getExitedVehiclesReport",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/PageQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/LimitQueryParamReports"
-          },
-          {
-            "$ref": "#/components/parameters/SortByExitedReportQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/OrderQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/StartDateQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/EndDateQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/ParkingIdQueryParam"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Exited vehicles report.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExitedVehiclesReportResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/admin/reports/entered-vehicles": {
-      "get": {
-        "tags": [
-          "Admin - Reports"
-        ],
-        "summary": "Get entered vehicles report",
-        "operationId": "getEnteredVehiclesReport",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/PageQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/LimitQueryParamReports"
-          },
-          {
-            "$ref": "#/components/parameters/SortByEnteredReportQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/OrderQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/StartDateQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/EndDateQueryParam"
-          },
-          {
-            "$ref": "#/components/parameters/ParkingIdQueryParam"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Entered vehicles report.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EnteredVehiclesReportResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    }
-  },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -1210,923 +24,486 @@
       }
     },
     "schemas": {
-      "ErrorResponse": {
+      "Staff": {
         "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Specific error message"
-          }
-        }
-      },
-      "SuccessMessageResponse": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Operation successful"
-          }
-        }
-      },
-      "Pagination": {
-        "type": "object",
-        "properties": {
-          "currentPage": {
-            "type": "integer",
-            "example": 1
-          },
-          "totalPages": {
-            "type": "integer",
-            "example": 10
-          },
-          "totalItems": {
-            "type": "integer",
-            "example": 95
-          },
-          "itemsPerPage": {
-            "type": "integer",
-            "example": 10
-          }
-        }
-      },
-      "RoleNameEnum": {
-        "type": "string",
-        "enum": [
-          "PARKING_ATTENDANT",
-          "ADMIN"
-        ],
-        "example": "PARKING_ATTENDANT"
-      },
-      "VehicleEntryStatusEnum": {
-        "type": "string",
-        "enum": [
-          "PARKED",
-          "EXITED"
-        ],
-        "example": "PARKED"
-      },
-      "StaffRegisterRequest": {
-        "type": "object",
-        "required": [
-          "firstName",
-          "lastName",
-          "email",
-          "password"
-        ],
+        "required": ["firstName", "lastName", "email", "password", "role"],
         "properties": {
           "firstName": {
             "type": "string",
+            "description": "Staff member's first name",
             "example": "John"
           },
           "lastName": {
             "type": "string",
+            "description": "Staff member's last name",
             "example": "Doe"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "example": "staff@parkwell.com"
+            "description": "Staff member's professional email address",
+            "example": "staff@xyz-premium.com"
           },
           "password": {
             "type": "string",
             "format": "password",
-            "example": "Str0ngP@ss!"
-          },
-          "roleName": {
-            "$ref": "#/components/schemas/RoleNameEnum",
-            "description": "Optional, for Admin creating user. Defaults to PARKING_ATTENDANT."
-          }
-        }
-      },
-      "VerifyEmailRequest": {
-        "type": "object",
-        "required": [
-          "email",
-          "code"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "code": {
-            "type": "string",
-            "minLength": 6,
-            "maxLength": 6,
-            "description": "6-digit OTP"
-          }
-        }
-      },
-      "LoginRequest": {
-        "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "password": {
-            "type": "string",
-            "format": "password"
-          }
-        }
-      },
-      "StaffUserMinimumResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
+            "description": "Secure password (minimum 8 characters, must include uppercase, lowercase, number, and special character)",
+            "example": "Xyz@Secure2024!"
           },
           "role": {
-            "$ref": "#/components/schemas/RoleNameEnum"
-          }
-        }
-      },
-      "LoginSuccessResponseStaff": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/StaffUserMinimumResponse"
-          }
-        }
-      },
-      "CurrentStaffUserResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/StaffUserMinimumResponse"
-          }
-        ],
-        "properties": {
-          "email_verified": {
-            "type": "boolean"
-          },
-          "permissions": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "created_at": {
             "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "ForgotPasswordRequest": {
-        "type": "object",
-        "required": [
-          "email"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          }
-        }
-      },
-      "ResetPasswordRequest": {
-        "type": "object",
-        "required": [
-          "email",
-          "otp_code",
-          "newPassword"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "otp_code": {
-            "type": "string",
-            "minLength": 6,
-            "maxLength": 6
-          },
-          "newPassword": {
-            "type": "string",
-            "format": "password"
-          }
-        }
-      },
-      "UpdateStaffProfileRequest": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "current_password": {
-            "type": "string",
-            "format": "password"
-          },
-          "new_password": {
-            "type": "string",
-            "format": "password"
-          }
-        }
-      },
-      "AdminStaffUserResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CurrentStaffUserResponse"
-          }
-        ],
-        "properties": {
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "AdminStaffUserListResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AdminStaffUserResponse"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        }
-      },
-      "AdminCreateStaffRequest": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/StaffRegisterRequest"
-          }
-        ]
-      },
-      "AdminUpdateStaffRequest": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "roleName": {
-            "$ref": "#/components/schemas/RoleNameEnum"
-          },
-          "email_verified": {
-            "type": "boolean"
-          },
-          "newPassword": {
-            "type": "string",
-            "format": "password"
-          }
-        }
-      },
-      "AdminStaffUserResponseWrapper": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/AdminStaffUserResponse"
-          }
-        }
-      },
-      "RoleResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "$ref": "#/components/schemas/RoleNameEnum"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "PermissionResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
+            "enum": ["PARKING_ATTENDANT", "ADMIN"],
+            "description": "Staff member's role in the Premium Parking Management System",
+            "example": "PARKING_ATTENDANT"
           }
         }
       },
       "ParkingFacility": {
         "type": "object",
-        "required": [
-          "id",
-          "code",
-          "name",
-          "total_spaces",
-          "occupied_spaces",
-          "charge_per_hour"
-        ],
+        "required": ["code", "name", "total_spaces", "charge_per_hour"],
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
           "code": {
             "type": "string",
-            "example": "P1"
+            "description": "Unique identifier code for the premium parking facility",
+            "example": "PREM-001"
           },
           "name": {
             "type": "string",
-            "example": "Main Lot"
+            "description": "Premium parking facility name",
+            "example": "XYZ Premium Parking - Main Plaza"
           },
           "total_spaces": {
             "type": "integer",
-            "example": 100
+            "minimum": 0,
+            "description": "Total number of premium parking spaces available",
+            "example": 150
           },
           "occupied_spaces": {
             "type": "integer",
-            "example": 25
+            "minimum": 0,
+            "description": "Current number of occupied premium parking spaces",
+            "example": 45
           },
           "location": {
             "type": "string",
-            "nullable": true,
-            "example": "North Entrance"
+            "description": "Premium parking facility location description",
+            "example": "XYZ Premium Plaza - North Wing"
           },
           "charge_per_hour": {
             "type": "number",
             "format": "float",
-            "example": 2.50
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
+            "minimum": 0,
+            "description": "Premium parking rate per hour (USD)",
+            "example": 5.00
           }
         }
       },
-      "CreateParkingFacilityRequest": {
+      "VehicleEntry": {
         "type": "object",
-        "required": [
-          "code",
-          "name",
-          "total_spaces",
-          "charge_per_hour"
-        ],
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "total_spaces": {
-            "type": "integer"
-          },
-          "location": {
-            "type": "string",
-            "nullable": true
-          },
-          "charge_per_hour": {
-            "type": "number",
-            "format": "float"
-          }
-        }
-      },
-      "UpdateParkingFacilityRequest": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "total_spaces": {
-            "type": "integer"
-          },
-          "location": {
-            "type": "string",
-            "nullable": true
-          },
-          "charge_per_hour": {
-            "type": "number",
-            "format": "float"
-          },
-          "occupied_spaces": {
-            "type": "integer"
-          }
-        }
-      },
-      "ParkingFacilityResponseWrapper": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "parking": {
-            "$ref": "#/components/schemas/ParkingFacility"
-          }
-        }
-      },
-      "ParkingFacilityListResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ParkingFacility"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        }
-      },
-      "SelectableParkingResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "total_spaces": {
-            "type": "integer"
-          },
-          "occupied_spaces": {
-            "type": "integer"
-          }
-        }
-      },
-      "SelectableParkingListResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SelectableParkingResponse"
-            }
-          }
-        }
-      },
-      "RecordVehicleEntryRequest": {
-        "type": "object",
-        "required": [
-          "plate_number",
-          "parking_id"
-        ],
+        "required": ["plate_number", "parking_id", "recorded_by_id"],
         "properties": {
           "plate_number": {
             "type": "string",
-            "example": "ABC-123"
+            "description": "Vehicle license plate number",
+            "example": "XYZ-2024"
           },
           "parking_id": {
             "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
-      "VehicleEntryDetails": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "plate_number": {
-            "type": "string"
-          },
-          "entry_time": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "exit_time": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "calculated_duration_minutes": {
-            "type": "integer",
-            "nullable": true
-          },
-          "charged_amount": {
-            "type": "number",
-            "format": "float",
-            "nullable": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/VehicleEntryStatusEnum"
-          },
-          "ticket_number": {
-            "type": "string"
-          },
-          "parking_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "parking": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "charge_per_hour": {
-                "type": "number",
-                "format": "float"
-              }
-            }
+            "format": "uuid",
+            "description": "Unique identifier of the premium parking facility",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "recorded_by_id": {
             "type": "string",
             "format": "uuid",
-            "nullable": true
+            "description": "ID of the premium parking attendant recording the entry",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
           },
-          "recorded_by": {
-            "type": "object",
-            "properties": {
-              "firstName": {
-                "type": "string"
-              },
-              "lastName": {
-                "type": "string"
-              }
-            },
-            "nullable": true
-          },
-          "created_at": {
+          "entry_time": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Premium parking entry timestamp (automatically recorded)",
+            "example": "2024-03-22T13:13:00Z"
           },
-          "updated_at": {
+          "exit_time": {
             "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "VehicleEntryResponseWrapper": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+            "format": "date-time",
+            "description": "Premium parking exit timestamp (null if vehicle is still parked)",
+            "example": null
           },
-          "vehicleEntry": {
-            "$ref": "#/components/schemas/VehicleEntryDetails"
-          },
-          "ticketDownloadUrl": {
+          "status": {
             "type": "string",
-            "format": "url"
-          }
-        }
-      },
-      "VehicleExitResponseWrapper": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+            "enum": ["PARKED", "EXITED"],
+            "description": "Current status of the premium parking session",
+            "example": "PARKED"
           },
-          "vehicleEntry": {
-            "$ref": "#/components/schemas/VehicleEntryDetails"
-          },
-          "billDownloadUrl": {
-            "type": "string",
-            "format": "url"
-          },
-          "parkingStatus": {
-            "type": "string"
-          }
-        }
-      },
-      "ReportSummaryExited": {
-        "type": "object",
-        "properties": {
-          "totalVehiclesExited": {
-            "type": "integer"
-          },
-          "totalRevenue": {
+          "charged_amount": {
             "type": "number",
-            "format": "float"
+            "format": "float",
+            "minimum": 0,
+            "description": "Total premium parking fee in USD",
+            "example": 15.00
           }
         }
       },
-      "ReportSummaryEntered": {
+      "Error": {
         "type": "object",
         "properties": {
-          "totalVehiclesEntered": {
-            "type": "integer"
+          "message": {
+            "type": "string",
+            "description": "Detailed error message for premium parking operations",
+            "example": "Invalid premium parking facility data provided"
           }
         }
-      },
-      "ExitedVehiclesReportResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VehicleEntryDetails"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/register-staff": {
+      "post": {
+        "tags": ["Premium Authentication"],
+        "summary": "Register a new premium parking staff member",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Premium staff account successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium staff account created successfully. Welcome to XYZ LTD PMS!"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "123e4567-e89b-12d3-a456-426614174002"
+                    }
+                  }
+                }
+              }
             }
           },
-          "summary": {
-            "$ref": "#/components/schemas/ReportSummaryExited"
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        }
-      },
-      "EnteredVehiclesReportResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VehicleEntryDetails"
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
-          },
-          "summary": {
-            "$ref": "#/components/schemas/ReportSummaryEntered"
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
           }
         }
       }
     },
-    "parameters": {
-      "IdPathParamUuid": {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "description": "UUID Identifier of the resource",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
-      "PageQueryParam": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number",
-        "schema": {
-          "type": "integer",
-          "default": 1,
-          "minimum": 1
-        }
-      },
-      "LimitQueryParam": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "default": 10,
-          "minimum": 1,
-          "maximum": 100
-        }
-      },
-      "LimitQueryParamReports": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page for reports",
-        "schema": {
-          "type": "integer",
-          "default": 15,
-          "minimum": 1,
-          "maximum": 100
-        }
-      },
-      "OrderQueryParam": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order (asc/desc)",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc"
-        }
-      },
-      "SearchStaffQueryParam": {
-        "name": "search",
-        "in": "query",
-        "description": "Search staff by name or email",
-        "required": false,
-        "schema": {
-          "type": "string"
-        }
-      },
-      "SortByStaffQueryParam": {
-        "name": "sortBy",
-        "in": "query",
-        "description": "Field to sort staff users by",
-        "required": false,
-        "schema": {
-          "type": "string",
-          "enum": [
-            "firstName",
-            "lastName",
-            "email",
-            "role",
-            "created_at"
-          ],
-          "default": "created_at"
-        }
-      },
-      "RoleFilterQueryParam": {
-        "name": "role",
-        "in": "query",
-        "description": "Filter by staff role name",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/RoleNameEnum"
-        }
-      },
-      "SearchParkingsQueryParam": {
-        "name": "search",
-        "in": "query",
-        "description": "Search parking facilities by code, name, or location",
-        "required": false,
-        "schema": {
-          "type": "string"
-        }
-      },
-      "SortByParkingsQueryParam": {
-        "name": "sortBy",
-        "in": "query",
-        "description": "Field to sort parking facilities by",
-        "required": false,
-        "schema": {
-          "type": "string",
-          "enum": [
-            "name",
-            "code",
-            "total_spaces",
-            "occupied_spaces",
-            "charge_per_hour",
-            "location",
-            "created_at"
-          ],
-          "default": "name"
-        }
-      },
-      "LimitQueryParamSelectable": {
-        "name": "limit",
-        "in": "query",
-        "description": "Max items for selectable list",
-        "schema": {
-          "type": "integer",
-          "default": 200
-        }
-      },
-      "SortByExitedReportQueryParam": {
-        "name": "sortBy",
-        "in": "query",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "exit_time",
-            "plate_number",
-            "charged_amount",
-            "calculated_duration_minutes",
-            "parking.name"
-          ],
-          "default": "exit_time"
-        }
-      },
-      "SortByEnteredReportQueryParam": {
-        "name": "sortBy",
-        "in": "query",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "entry_time",
-            "plate_number",
-            "status",
-            "parking.name"
-          ],
-          "default": "entry_time"
-        }
-      },
-      "StartDateQueryParam": {
-        "name": "startDate",
-        "in": "query",
-        "description": "Format YYYY-MM-DD",
-        "schema": {
-          "type": "string",
-          "format": "date"
-        }
-      },
-      "EndDateQueryParam": {
-        "name": "endDate",
-        "in": "query",
-        "description": "Format YYYY-MM-DD",
-        "schema": {
-          "type": "string",
-          "format": "date"
-        }
-      },
-      "ParkingIdQueryParam": {
-        "name": "parkingId",
-        "in": "query",
-        "description": "Filter by Parking Facility UUID",
-        "required": false,
-        "schema": {
-          "type": "string",
-          "format": "uuid"
+    "/auth/login": {
+      "post": {
+        "tags": ["Premium Authentication"],
+        "summary": "Authenticate premium parking staff member",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "staff@xyz-premium.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Xyz@Secure2024!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Premium authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Welcome to XYZ LTD Premium Parking Management System"
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "jwt.token.here"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/Staff"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "responses": {
-      "UnauthorizedError": {
-        "description": "Unauthorized. Token missing or invalid.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+    "/parkings": {
+      "post": {
+        "tags": ["Premium Parking Management"],
+        "summary": "Create a new premium parking facility",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParkingFacility"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Premium parking facility successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium parking facility successfully created"
+                    },
+                    "parking": {
+                      "$ref": "#/components/schemas/ParkingFacility"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
       },
-      "ForbiddenError": {
-        "description": "Forbidden. Insufficient permissions.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+      "get": {
+        "tags": ["Premium Parking Management"],
+        "summary": "Retrieve all premium parking facilities",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of premium parking facilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParkingFacility"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
-      },
-      "NotFoundError": {
-        "description": "Resource not found.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+      }
+    },
+    "/vehicle-entries/enter": {
+      "post": {
+        "tags": ["Premium Vehicle Operations"],
+        "summary": "Record premium parking vehicle entry",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleEntry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Premium parking entry successfully recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium parking entry successfully recorded"
+                    },
+                    "vehicleEntry": {
+                      "$ref": "#/components/schemas/VehicleEntry"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
-      },
-      "BadRequestError": {
-        "description": "Bad Request. Invalid input or validation error.",
-        "content": {
-          "application/json": {
+      }
+    },
+    "/vehicle-entries/{entryId}/exit": {
+      "post": {
+        "tags": ["Premium Vehicle Operations"],
+        "summary": "Record premium parking vehicle exit",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the vehicle entry",
             "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+              "type": "string",
+              "format": "uuid"
             }
           }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal Server Error.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium parking exit successfully recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium parking exit successfully recorded"
+                    },
+                    "vehicleEntry": {
+                      "$ref": "#/components/schemas/VehicleEntry"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vehicle entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
