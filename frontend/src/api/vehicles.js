@@ -1,20 +1,20 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1"; // Adjusted default port
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 console.log("API Base URL for Vehicles:", API_URL);
 
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important for sessions/cookies if used, good practice for JWT too
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add token to requests if available
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+  const token = localStorage.getItem("token"); 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

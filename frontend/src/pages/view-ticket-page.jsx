@@ -7,12 +7,6 @@ import { Loader } from '../components/ui/loader';
 import { Button } from '../components/ui/button';
 import { AlertTriangle, DownloadCloud, Ticket, Info } from 'lucide-react';
 
-// Assuming downloadTicketApiCall is correctly defined in your API service file
-// and it's exported.
-// e.g., import { downloadTicketApiCall } from '../api/slot-requests';
-// For this example, I'll keep it inline as you provided it, but it should be in an API file.
-
-
 
 
 export const downloadTicketApiCall = async (requestId, token) => {
@@ -27,8 +21,7 @@ export const downloadTicketApiCall = async (requestId, token) => {
             },
         });
 
-        // If the HTTP response is OK (2xx status), assume the browser is handling the download
-        // due to Content-Disposition: attachment. We won't try to process the body.
+        
         if (response.ok) {
             console.log(`[downloadTicketApiCall] HTTP ${response.status} received. Assuming browser is handling download.`);
             const filenameHeader = response.headers.get('content-disposition');
@@ -40,13 +33,13 @@ export const downloadTicketApiCall = async (requestId, token) => {
             }
             return { success: true, filename: filename };
         } else {
-            // If not response.ok, it's a definite error from the server (4xx, 5xx)
+            
             let errorMessage = `Error ${response.status}: Could not download ticket.`;
             try {
                 const errorData = await response.json(); // Try to get a JSON error message
                 errorMessage = errorData.message || errorMessage;
             } catch (e) {
-                // If error response isn't JSON, use status text
+               
                 errorMessage = response.statusText || errorMessage;
             }
             const error = new Error(errorMessage);
@@ -155,7 +148,7 @@ export const ViewTicketPage = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-page-bg text-text-main p-6 text-center">
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-16 w-auto mb-8" />
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-16 w-auto mb-8" />
 
             <div className="bg-card-bg shadow-2xl rounded-xl p-8 md:p-10 border border-theme-border-default/20 max-w-lg w-full">
                 <div className="flex items-center justify-center mb-6">
@@ -225,7 +218,7 @@ export const ViewTicketPage = () => {
             </div>
 
             <p className="text-center text-xs text-text-muted mt-10">
-                © {new Date().getFullYear()} ParkWell Systems.
+                © {new Date().getFullYear()} XYZ LTD PMS Systems.
             </p>
         </div>
     );

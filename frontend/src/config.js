@@ -1,22 +1,22 @@
-// API URL
+// Configuration file for the XYZ LTD Parking Management System
 export const API_URL = process.env.VITE_API_URL || "http://localhost:5000/api";
 
-// App configuration
+// API URL for file uploads
 export const APP_CONFIG = {
-  appName: "Inventory Management System",
+  appName: "XYZ LTD Parking Management System",
   appVersion: "1.0.0",
-  appDescription: "A comprehensive inventory management system",
-  appAuthor: "Your Company",
-  appWebsite: "https://yourcompany.com",
+  appDescription: "A comprehensive Parking management system",
+  appAuthor: "XYZ LTD Company",
+  appWebsite: "https://XYZLTD.com",
 };
 
-// Pagination defaults
+// Default values for pagination
 export const PAGINATION_DEFAULTS = {
   itemsPerPage: 10,
   maxPagesToShow: 5,
 };
 
-// Date format options
+
 export const DATE_FORMAT_OPTIONS = {
   short: { year: "numeric", month: "short", day: "numeric" },
   long: { year: "numeric", month: "long", day: "numeric" },

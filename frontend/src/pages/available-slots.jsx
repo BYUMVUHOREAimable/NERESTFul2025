@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { Search, ArrowUpDown, ParkingCircle, Send, DollarSign } from "lucide-react"; // Added DollarSign
+import { Search, ArrowUpDown, ParkingCircle, Send, DollarSign } from "lucide-react";
 import { getAvailableParkingSlots } from "../api/admin-parkings.js";
 import { useAuth } from "../context/auth-context";
 import {
@@ -51,7 +51,7 @@ export const AvailableSlotsPage = () => {
 
   const { data, isLoading, isError, refetch } = useQuery(
     [
-      "availableParkingSlots", // Query key
+      "availableParkingSlots",
       searchQuery,
       sortBy,
       sortOrder,
@@ -65,7 +65,6 @@ export const AvailableSlotsPage = () => {
         order: sortOrder,
         page: currentPage,
         limit: pageSize,
-        // Backend filters to 'AVAILABLE' for non-admins
       }),
     {
       keepPreviousData: true,
@@ -118,15 +117,14 @@ export const AvailableSlotsPage = () => {
         </Badge>
       );
     }
-    // Fallback for other statuses, though ideally only AVAILABLE are shown here.
+  
     return <Badge variant="outline">{status}</Badge>;
   };
 
-  // --- Permission Check, Loading, Error States (same as your provided code) ---
   if (!canViewAvailableSlots && !isLoading) {
     return (
       <div className="text-center py-10">
-        <p className="text-destructive"> {/* Using themed color */}
+        <p className="text-destructive">
           You do not have permission to view available slots.
         </p>
         <Button onClick={() => navigate("/dashboard")} className="mt-4 bg-brand-yellow hover:bg-brand-yellow-hover text-text-on-brand">
@@ -139,12 +137,12 @@ export const AvailableSlotsPage = () => {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader size="default" colorClassName="border-brand-yellow" /> {/* Themed page loader */}
+        <Loader size="default" colorClassName="border-brand-yellow" />
       </div>
     );
   if (isError)
     return (
-      <div className="text-center py-10 text-destructive"> {/* Themed color */}
+      <div className="text-center py-10 text-destructive">
         Error loading available parking slots.{" "}
         <Button onClick={() => refetch()} variant="outline">Retry</Button>
       </div>
@@ -155,7 +153,7 @@ export const AvailableSlotsPage = () => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="container mx-auto py-6 px-4 sm:px-6 lg:px-8" // Added container for padding
+      className="container mx-auto py-6 px-4 sm:px-6 lg:px-8"
     >
       <Card className="bg-card-bg border border-theme-border-default shadow-xl rounded-xl">
         <CardHeader className="pb-4 border-b border-theme-border-default">
@@ -165,7 +163,7 @@ export const AvailableSlotsPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="mb-6"> {/* Consistent margin */}
+          <div className="mb-6">
             <div className="relative">
               <Search
                 className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-text-placeholder"
@@ -199,7 +197,7 @@ export const AvailableSlotsPage = () => {
             <>
               <div className="rounded-lg border border-theme-border-default overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-input-bg/50"> {/* Subtle header background */}
+                  <TableHeader className="bg-input-bg/50">
                     <TableRow>
                       <TableHead className="cursor-pointer text-text-main font-semibold" onClick={() => handleSort("slot_number")}>
                         Slot # {sortBy === "slot_number" && <ArrowUpDown className={`ml-1 h-3.5 w-3.5 ${sortOrder === "desc" ? "rotate-180" : ""}`} />}
@@ -213,7 +211,7 @@ export const AvailableSlotsPage = () => {
                       <TableHead className="cursor-pointer text-text-main font-semibold" onClick={() => handleSort("location")}>
                         Location {sortBy === "location" && <ArrowUpDown className={`ml-1 h-3.5 w-3.5 ${sortOrder === "desc" ? "rotate-180" : ""}`} />}
                       </TableHead>
-                      <TableHead className="cursor-pointer text-text-main font-semibold" onClick={() => handleSort("cost_per_hour")}> {/* ADDED SORT FOR COST */}
+                      <TableHead className="cursor-pointer text-text-main font-semibold" onClick={() => handleSort("cost_per_hour")}>
                         Cost/Hour {sortBy === "cost_per_hour" && <ArrowUpDown className={`ml-1 h-3.5 w-3.5 ${sortOrder === "desc" ? "rotate-180" : ""}`} />}
                       </TableHead>
                       <TableHead className="text-text-main font-semibold">Status</TableHead>
@@ -227,7 +225,7 @@ export const AvailableSlotsPage = () => {
                         <TableCell className="text-text-muted">{slot.size}</TableCell>
                         <TableCell className="text-text-muted">{slot.vehicle_type}</TableCell>
                         <TableCell className="text-text-muted">{slot.location || "N/A"}</TableCell>
-                        <TableCell className="font-semibold text-text-main"> {/* Display Cost */}
+                        <TableCell className="font-semibold text-text-main">
                           {slot.cost_per_hour !== null && slot.cost_per_hour !== undefined
                             ? `$${parseFloat(slot.cost_per_hour).toFixed(2)}`
                             : <Badge variant="secondary">Free</Badge>
@@ -270,7 +268,6 @@ export const AvailableSlotsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Request Slot Modal */}
       <RequestSlotModal
         isOpen={isRequestModalOpen}
         onClose={() => setIsRequestModalOpen(false)}

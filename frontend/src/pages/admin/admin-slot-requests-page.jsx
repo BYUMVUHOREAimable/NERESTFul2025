@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { toast } from "react-hot-toast";
@@ -151,7 +151,7 @@ export const AdminSlotRequestsPage = () => {
           !!isResolveDialogOpen &&
           resolutionStatus === "APPROVED" &&
           !!selectedRequestToResolve,
-        // Refetch if the selected request (and thus its vehicle info) changes while dialog is open for approval
+       
       }
     );
   const availableSlotsForSelection = availableSlotsData?.data || [];
@@ -163,7 +163,7 @@ export const AdminSlotRequestsPage = () => {
         toast.success("Slot request resolved successfully!");
         refetch();
         queryClient.invalidateQueries("availableParkingSlots");
-        queryClient.invalidateQueries("admin-parkingSlots"); // Also refetch admin slot list
+        queryClient.invalidateQueries("admin-parkingSlots"); 
         setIsResolveDialogOpen(false);
       },
       onError: (error) =>
@@ -210,7 +210,7 @@ export const AdminSlotRequestsPage = () => {
 
   const handleResolveSubmit = () => {
     if (!selectedRequestToResolve || !resolutionStatus) return;
-    setResolveFormError(""); // Clear previous error
+    setResolveFormError(""); 
 
     const resolveData = {
       status: resolutionStatus,

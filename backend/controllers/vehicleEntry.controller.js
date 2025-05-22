@@ -72,7 +72,7 @@ const recordVehicleEntry = async (req, res) => {
             return { newEntry, parkingFacility, updatedParking };
         });
 
-        // Prepare data for PDF ticket (outside transaction)
+       
         const entryTicketData = {
             plate_number: result.newEntry.plate_number,
             ticket_number: result.newEntry.ticket_number,
@@ -83,18 +83,15 @@ const recordVehicleEntry = async (req, res) => {
                 location: result.parkingFacility.location
             },
             attendantName: attendantName,
-            appName: "ParkWell Systems"
+            appName: "XYZ LTD PMS Systems"
         };
 
-        // Generate PDF ticket (can be done after response for speed, or before)
-        // For now, we'll just return a link to a download endpoint
+       
         const ticketDownloadUrl =
             `${process.env.BACKEND_URL || req.protocol + '://' + req.get('host')}/api/v1/vehicle-entries/${result.newEntry.id}/entry-ticket`;
 
 
-        // Log action if logging is enabled
-        // await logAction({ userId: attendantUserId, action: `Recorded entry for ${result.newEntry.plate_number} at ${result.parkingFacility.name}`, entityType: 'VehicleEntry', entityId: result.newEntry.id });
-
+       
         res.status(201).json({
             message: `Vehicle ${result.newEntry.plate_number} entered successfully. Occupied spaces in ${result.updatedParking.name}: ${result.updatedParking.occupied_spaces}/${result.updatedParking.total_spaces}.`,
             vehicleEntry: result.newEntry,
@@ -113,9 +110,7 @@ const recordVehicleEntry = async (req, res) => {
 };
 
 
-/**
- * (Attendant/Admin) Download the entry ticket PDF for a vehicle entry.
- */
+
 const downloadEntryTicket = async (req, res) => {
     const entryId = req.params.entryId;
     console.log(`[Public TicketDownload] Attempting for entry ID: ${entryId}`);
@@ -124,8 +119,8 @@ const downloadEntryTicket = async (req, res) => {
         const vehicleEntry = await prisma.vehicleEntry.findUnique({
             where: { id: entryId },
             include: {
-                parking: true, // Need parking details for the ticket
-                recorded_by: { // Optional: fetch who recorded it, if you want to display on ticket
+                parking: true, 
+                recorded_by: { 
                     select: { firstName: true, lastName: true }
                 }
             }
@@ -136,11 +131,8 @@ const downloadEntryTicket = async (req, res) => {
             return res.status(404).json({ message: "Vehicle entry record not found." });
         }
 
-        // No JWT-based authorization check as req.user is not available for public route.
-        // Access is granted if the entryId is valid and found.
-
-        // Determine attendant name for the ticket
-        let attendantNameOnTicket = 'System'; // Default if no attendant linked or we don't want to show
+       
+        let attendantNameOnTicket = 'System'; 
         if (vehicleEntry.recorded_by) {
             attendantNameOnTicket = `${vehicleEntry.recorded_by.firstName || ''} ${vehicleEntry.recorded_by.lastName || ''}`.trim();
         }
@@ -155,8 +147,8 @@ const downloadEntryTicket = async (req, res) => {
                 code: vehicleEntry.parking.code,
                 location: vehicleEntry.parking.location
             },
-            attendantName: attendantNameOnTicket, // Use fetched or default name
-            appName: "ParkWell Systems"
+            attendantName: attendantNameOnTicket, 
+            appName: "XYZ LTD PMS Systems"
         };
         console.log(`[Public TicketDownload] Data for PDF:`, JSON.stringify(ticketData, null, 2));
 
@@ -177,8 +169,7 @@ const downloadEntryTicket = async (req, res) => {
 };
 
 const recordVehicleExit = async (req, res) => {
-    const attendantUserId = req.user.user_id; // User ID from JWT (the one performing the exit)
-    // const attendantName = `${req.user.firstName || ''} ${req.user.lastName || ''}`.trim() || 'System'; // This is correct for who is *currently* acting
+    const attendantUserId = req.user.user_id; 
     const { vehicleEntryId } = req.params;
 
     try {
@@ -186,9 +177,7 @@ const recordVehicleExit = async (req, res) => {
             const vehicleEntry = await tx.vehicleEntry.findUnique({
                 where: { id: vehicleEntryId },
                 include: {
-                    parking: true, // Need parking for charge_per_hour
-                    // We don't necessarily need to include recorded_by here for calculations,
-                    // but we will include it in the final update's include for the response.
+                    parking: true, 
                 }
             });
 
@@ -219,11 +208,11 @@ const recordVehicleExit = async (req, res) => {
                     status: VehicleEntryStatus.EXITED,
                     calculated_duration_minutes: durationMinutes,
                     charged_amount: calculatedCharge,
-                    recorded_by_id: attendantUserId, // Update/confirm who recorded the exit action
+                    recorded_by_id: attendantUserId, 
                 },
-                include: { // Data to return in the API response and for the bill
+                include: {
                     parking: true,
-                    recorded_by: { // <<< CORRECTED RELATION NAME
+                    recorded_by: { 
                         select: {
                             firstName: true,
                             lastName: true
@@ -241,12 +230,11 @@ const recordVehicleExit = async (req, res) => {
                 console.warn(`Corrected occupied_spaces for parking ${updatedParking.id} to 0.`);
             }
 
-            // The `userRecordedBy` for the PDF should be the person who *performed the exit* action,
-            // which is the currently logged-in user from req.user.
+            
             return {
                 updatedVehicleEntry,
                 updatedParking,
-                userWhoPerformedExit: { // For clarity in PDF generation
+                userWhoPerformedExit: { 
                     firstName: req.user.firstName,
                     lastName: req.user.lastName
                 }
@@ -259,7 +247,7 @@ const recordVehicleExit = async (req, res) => {
 
         res.status(200).json({
             message: `Vehicle ${result.updatedVehicleEntry.plate_number} exited. Amount charged: $${result.updatedVehicleEntry.charged_amount.toFixed(2)}.`,
-            vehicleEntry: result.updatedVehicleEntry, // This will have the included recorded_by details
+            vehicleEntry: result.updatedVehicleEntry, 
             billDownloadUrl: billDownloadUrl,
             parkingStatus: `Occupied spaces in ${result.updatedParking.name}: ${result.updatedParking.occupied_spaces}/${result.updatedParking.total_spaces}`
         });
@@ -280,8 +268,8 @@ const downloadExitBill = async (req, res) => {
         const vehicleEntry = await prisma.vehicleEntry.findUnique({
             where: { id: entryId },
             include: {
-                parking: true, // For charge_per_hour and parking details
-                recorded_by: { // Staff who recorded the entry/exit actions (optional for bill)
+                parking: true, 
+                recorded_by: { 
                     select: { firstName: true, lastName: true }
                 }
             }
@@ -301,28 +289,25 @@ const downloadExitBill = async (req, res) => {
         }
         console.log(`[Public ExitBillDownload] Entry is EXITED and has charge/exit time. Proceeding to generate PDF bill.`);
 
-        // Determine the name to put on the bill as "Processed by"
-        // This would be the staff member who last updated the record (likely recorded the exit)
+        
         let processedByName = 'System';
         if (vehicleEntry.recorded_by) {
-            processedByName = `${vehicleEntry.recorded_by.firstName || ''} ${vehicleEntry.recorded_by.lastName || ''}`.trim() || 'ParkWell Staff';
+            processedByName = `${vehicleEntry.recorded_by.firstName || ''} ${vehicleEntry.recorded_by.lastName || ''}`.trim() || 'XYZ LTD PMS Staff';
         }
 
         const billData = {
-            // userRecordedBy is now about who is on record for this VehicleEntry action
-            // For a public download, we can't know who is *currently* downloading it.
-            // So, the PDF might say "Processed by: [Name of attendant who recorded exit]"
-            userRecordedBy: { // This now refers to the staff member associated with the VehicleEntry record
-                firstName: vehicleEntry.recorded_by?.firstName, // Use optional chaining
+          
+            userRecordedBy: { 
+                firstName: vehicleEntry.recorded_by?.firstName, 
                 lastName: vehicleEntry.recorded_by?.lastName
             },
-            processedByForDisplay: processedByName, // A combined name for display
-            vehicleEntry: vehicleEntry, // Contains all nested data like .parking
-            appName: "ParkWell Systems"
+            processedByForDisplay: processedByName, 
+            vehicleEntry: vehicleEntry, 
+            appName: "XYZ LTD PMS Systems"
         };
         console.log(`[Public ExitBillDownload] Data for PDF bill:`, JSON.stringify(billData, null, 2));
 
-        const pdfBuffer = await generateExitBillPdf(billData); // Ensure generateExitBillPdf uses billData.processedByForDisplay
+        const pdfBuffer = await generateExitBillPdf(billData); 
         console.log(`[Public ExitBillDownload] PDF bill buffer generated for ${entryId}. Length: ${pdfBuffer.length}`);
 
         res.setHeader('Content-Type', 'application/pdf');
@@ -341,13 +326,12 @@ const listVehicleEntries = async (req, res) => {
     try {
         const {
             page = 1, limit = 10, sortBy = 'entry_time', order = 'desc',
-            status, // e.g., "PARKED", "EXITED"
-            plate_number_search, // Search by plate
-            parking_id_filter,   // Filter by specific parking facility
-            entryDateFrom,       // YYYY-MM-DD
-            entryDateTo,         // YYYY-MM-DD
-            // exitDateFrom,     // For reports on exited vehicles
-            // exitDateTo
+            status, 
+            plate_number_search, 
+            parking_id_filter,
+            entryDateFrom,      
+            entryDateTo,         
+           
         } = req.query;
 
         const pageNum = parseInt(page, 10);
@@ -374,19 +358,19 @@ const listVehicleEntries = async (req, res) => {
             if (entryDateTo) {
                 const eDate = new Date(entryDateTo);
                 if (!isNaN(eDate.getTime())) {
-                    eDate.setHours(23, 59, 59, 999); // Include whole end day
+                    eDate.setHours(23, 59, 59, 999); 
                     where.entry_time.lte = eDate;
                 }
             }
         }
-        // Add similar logic for exit_time if filtering exited vehicles
+        
 
         const orderByOptions = {};
-        // Define allowed sort fields for vehicle entries
+        
         if (['entry_time', 'plate_number', 'status', 'exit_time', 'charged_amount'].includes(sortBy)) {
             orderByOptions[sortBy] = order.toLowerCase() === 'asc' ? 'asc' : 'desc';
         } else {
-            orderByOptions.entry_time = 'desc'; // Default sort
+            orderByOptions.entry_time = 'desc'; 
         }
 
         const entries = await prisma.vehicleEntry.findMany({
@@ -395,15 +379,15 @@ const listVehicleEntries = async (req, res) => {
             take: limitNum,
             orderBy: orderByOptions,
             include: {
-                parking: { select: { code: true, name: true } }, // Include parking info
-                recorded_by: { select: { firstName: true, lastName: true } }, // Attendant info
+                parking: { select: { code: true, name: true } }, 
+                recorded_by: { select: { firstName: true, lastName: true } },
             },
         });
         const totalEntries = await prisma.vehicleEntry.count({ where });
 
         res.status(200).json({
             data: entries,
-            pagination: { /* ... pagination data ... */ },
+            pagination: { },
         });
     } catch (error) {
         console.error('List vehicle entries error:', error);
@@ -413,7 +397,7 @@ const listVehicleEntries = async (req, res) => {
 module.exports = {
     recordVehicleEntry,
     downloadEntryTicket,
-    recordVehicleExit,    // <-- NEW
-    downloadExitBill,     // <-- NEW
+    recordVehicleExit,   
+    downloadExitBill,    
     listVehicleEntries
 };
