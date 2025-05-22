@@ -11,13 +11,13 @@ import {
   MoreHorizontal,
   ArrowUpDown,
   ParkingCircle,
-  GridIcon, // Grid for bulk
+ 
 } from "lucide-react";
 import {
   adminGetAllParkingSlots,
   adminDeleteParkingSlot,
-  adminBulkCreateParkingSlots, // Import bulk create
-} from "../../api/admin-parkings.js"; // Adjust path
+  
+} from "../../api/admin-parkings.js"; 
 import { useAuth } from "../../context/auth-context";
 import {
   Table,
@@ -53,14 +53,12 @@ import { Loader } from "../../components/ui/loader";
 import { Pagination } from "../../components/ui/pagination";
 import { EmptyState } from "../../components/ui/empty-state";
 import { Badge } from "../../components/ui/badge";
-import { ParkingSlotForm } from "../../components/admin/AdminParkingFormPage.jsx.jsx"; // Import the form
-// Placeholder for Bulk Form - create this next
-// import { BulkParkingSlotForm } from "../../components/admin/bulk-parking-slot-form";
+import { ParkingSlotForm } from "../../components/admin/AdminParkingFormPage.jsx.jsx";
 
 export const AdminParkingSlotsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const queryClient = useQueryClient();
+ 
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("slot_number");
@@ -70,11 +68,10 @@ export const AdminParkingSlotsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
 
-  // State for managing the Add/Edit Slot Form Dialog
+  
   const [isSlotFormOpen, setIsSlotFormOpen] = useState(false);
-  const [editingSlotData, setEditingSlotData] = useState(null); // To pass to form for editing
+  const [editingSlotData, setEditingSlotData] = useState(null); 
 
-  // State for Bulk Create Form Dialog
   const [isBulkFormOpen, setIsBulkFormOpen] = useState(false);
 
   const canManageSlots = user?.permissions?.includes("manage_parking_slots");
@@ -95,7 +92,7 @@ export const AdminParkingSlotsPage = () => {
         order: sortOrder,
         page: currentPage,
         limit: pageSize,
-        showAll: true, // Admins see all
+        showAll: true, 
       }),
     {
       keepPreviousData: true,

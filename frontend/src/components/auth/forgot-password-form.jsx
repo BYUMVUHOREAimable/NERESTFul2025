@@ -63,9 +63,9 @@ export const ForgotPasswordForm = () => {
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-yellow-dark/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
         <div className="relative z-10 text-center">
           <Link to="/" className="inline-block mb-10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-md">
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-20 w-auto mx-auto opacity-90 drop-shadow-lg" />
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-20 w-auto mx-auto opacity-90 drop-shadow-lg" />
             <h1 className="text-5xl font-bold mt-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-yellow-50 to-yellow-100 drop-shadow-sm">
-              ParkWell
+              XYZ LTD PMS
             </h1>
           </Link>
           <p className="text-xl mt-6 font-light max-w-xs sm:max-w-sm mx-auto leading-relaxed opacity-80">
@@ -83,7 +83,7 @@ export const ForgotPasswordForm = () => {
         <div className="w-full max-w-sm">
           <div className="flex justify-center mb-6 lg:hidden">
             <Link to="/">
-              <img src="/images/logo2.png" alt="ParkWell Logo" className="h-10 w-auto text-brand-yellow" />
+              <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-10 w-auto text-brand-yellow" />
             </Link>
           </div>
           <div className="bg-card-bg shadow-2xl rounded-xl p-8 border border-theme-border-default/20">
@@ -124,7 +124,7 @@ export const ForgotPasswordForm = () => {
             </form>
           </div>
           <p className="text-center text-xs text-text-muted mt-8">
-            © {new Date().getFullYear()} ParkWell Systems.
+            © {new Date().getFullYear()} XYZ LTD PM Systems.
           </p>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, subDays } from 'date-fns'; // For date formatting and default dates
+import { format, subDays } from 'date-fns'; 
 
 import {
     DollarSign, FileText, Users, ParkingSquare, Filter, CalendarDays, ArrowUpDown, Download, FilterX,
@@ -15,10 +15,10 @@ import {
 import {
     getExitedVehiclesReportApi,
     getEnteredVehiclesReportApi,
-    getParkingFacilitiesForFilter, // To filter reports by parking
-} from "../../api/reports"; // Adjust path
+    getParkingFacilitiesForFilter, 
+} from "../../api/reports"; 
 import { useAuth } from "../../context/auth-context";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"; // Shadcn UI
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"; 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { Button } from "../../components/ui/button";

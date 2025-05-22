@@ -6,7 +6,7 @@ import {
   Settings,
   UserCircle2,
   Menu,
-} from "lucide-react"; // UserCircle2 for consistency
+} from "lucide-react"; 
 import { useAuth } from "../../context/auth-context";
 import {
   DropdownMenu,
@@ -35,10 +35,10 @@ export const Header = ({ sidebarCollapsed, toggleSidebar }) => {
   };
 
   return (
-    // Header background: card-bg (white), with a subtle bottom border and shadow
+    
     <header className="bg-card-bg border-b border-theme-border-default sticky top-0 z-30 shadow-sm">
       <div className="px-4 sm:px-6 py-3 flex items-center justify-between">
-        {/* Left Side: Hamburger (mobile) & Greeting */}
+       
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -53,29 +53,16 @@ export const Header = ({ sidebarCollapsed, toggleSidebar }) => {
           <div>
             <h1 className="text-xl font-semibold text-text-main leading-tight">
               Hello, {user?.name?.split(" ")[0] || "User"}!{" "}
-              {/* Just first name for greeting */}
+              
             </h1>
             <p className="text-text-muted text-sm mt-0.5">{getGreeting()}</p>
           </div>
         </div>
 
-        {/* Right Side: Notifications & User Menu */}
+       
         <div className="flex items-center gap-3 md:gap-4">
 
-          {/* <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative rounded-full h-9 w-9 bg-input-bg text-text-muted hover:bg-theme-border-default hover:text-text-main" // Themed
-              aria-label="Notifications"
-            >
-              <Bell className="h-[18px] w-[18px]" />
-
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-1 ring-card-bg" />
-            </Button>
-          </div> */}
-
-          {/* User Dropdown */}
+    
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 rounded-full pl-1 pr-2 py-1 hover:bg-input-bg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-brand">
@@ -109,7 +96,7 @@ export const Header = ({ sidebarCollapsed, toggleSidebar }) => {
             >
               <div className="px-2 py-2 mb-1 border-b border-theme-border-default sm:hidden">
                 {" "}
-                {/* Mobile user info */}
+              
                 <p className="font-medium text-sm text-text-main truncate">
                   {user?.name || "User Name"}
                 </p>
@@ -126,7 +113,7 @@ export const Header = ({ sidebarCollapsed, toggleSidebar }) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => navigate("/settings")}
-                disabled // Example: disabled settings
+                disabled 
                 className="flex items-center py-2 px-2.5 text-sm text-text-main cursor-pointer rounded-md hover:bg-input-bg focus:bg-input-bg opacity-50 cursor-not-allowed"
               >
                 <Settings className="mr-2.5 h-4 w-4 text-text-muted" />{" "}

@@ -1,11 +1,5 @@
 import { DATE_FORMAT_OPTIONS } from "../config";
 
-/**
- * Format a date string using Intl.DateTimeFormat
- * @param {string|Date} dateString - The date to format
- * @param {string} format - The format to use (short, long, time, dateTime)
- * @returns {string} The formatted date string
- */
 export const formatDate = (dateString, format = "short") => {
   if (!dateString) return "";
 
@@ -16,11 +10,7 @@ export const formatDate = (dateString, format = "short") => {
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
 
-/**
- * Get relative time (e.g., "2 hours ago", "yesterday")
- * @param {string|Date} dateString - The date to format
- * @returns {string} The relative time string
- */
+
 export const getRelativeTime = (dateString) => {
   if (!dateString) return "";
 

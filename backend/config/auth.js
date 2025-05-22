@@ -1,8 +1,9 @@
-// config/auth.js
+// Configuration file for the XYZ LTD Parking Management System
+// This file contains constants and configuration settings for the application.
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-very-strong-secret-key';
-// Consider a longer expiry if this is the only token
+
 const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN || '1d'; // e.g., 1 day
 
 /**

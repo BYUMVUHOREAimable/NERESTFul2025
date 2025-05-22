@@ -3,35 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
 import { toast } from "react-hot-toast";
-import { Eye, EyeOff, UserPlus, ParkingCircle, ArrowLeft } from "lucide-react";
-// import { Logo } from "../ui/logo"; // Using image logo as in LoginForm
-import { registerStaff } from "../../api/auth"; // API endpoint for staff registration
-import { Input } from "../../components/ui/input";   // Ensure correct path
-import { Label } from "../../components/ui/label";   // Ensure correct path
-import { Button } from "../../components/ui/button"; // Ensure correct path
-import { Loader } from "../../components/ui/loader";   // Ensure correct path
-import { useAuth } from "../../context/auth-context"; // Ensure correct path
+import { Eye, EyeOff, UserPlus, ArrowLeft } from "lucide-react";
+import { registerStaff } from "../../api/auth";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Button } from "../../components/ui/button";
+import { Loader } from "../../components/ui/loader";
+import { useAuth } from "../../context/auth-context";
 
-const staffRegisterSchema = z // Schema name updated for clarity
+const staffRegisterSchema = z
   .object({
-    firstName: z.string().min(2, "First name (min 2 chars)").max(50, "First name too long"),
-    lastName: z.string().min(2, "Last name (min 2 chars)").max(50, "Last name too long"),
+    firstName: z.string().min(2, "First name must be at least 2 characters").max(50, "First name too long"),
+    lastName: z.string().min(2, "Last name must be at least 2 characters").max(50, "Last name too long"),
     email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(10, "Password (min 10 chars)") // Adjusted min length for staff example
-      // You can add back the more complex regex from your previous version if desired
-      .regex(/(?=.*[a-z])/, "Lowercase letter required")
-      .regex(/(?=.*[A-Z])/, "Uppercase letter required")
-      .regex(/(?=.*\d)/, "Digit required")
-      .regex(/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])/, "Special character required"), // Keep if policy
+    password: z.string().min(10, "Password must be at least 10 characters")
+      .regex(/(?=.*[a-z])/, "Password must include a lowercase letter")
+      .regex(/(?=.*[A-Z])/, "Password must include an uppercase letter")
+      .regex(/(?=.*\d)/, "Password must include a digit")
+      .regex(/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])/, "Password must include a special character"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    // roleName could be added here if this form is used by an Admin to create users with specific roles
+    role: z.enum(["PARKING_ATTENDANT", "ADMIN"], { errorMap: () => ({ message: "Please select a valid role" }) }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"], // Error will be attached to confirmPassword field
+    path: ["confirmPassword"],
   });
 
-export const RegisterForm = () => { // Changed to RegisterPage assuming it's a full page
+export const RegisterForm = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
@@ -39,7 +37,8 @@ export const RegisterForm = () => { // Changed to RegisterPage assuming it's a f
     lastName: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    role: "PARKING_ATTENDANT", // Default role
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -47,11 +46,11 @@ export const RegisterForm = () => { // Changed to RegisterPage assuming it's a f
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard", { replace: true }); // Default staff dashboard
+      navigate("/dashboard", { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
-  const registerMutation = useMutation(registerStaff, { // Using registerStaff from backend
+  const registerMutation = useMutation(registerStaff, {
     onSuccess: (data) => {
       toast.success("Staff account created! Please check your email for verification.");
       navigate("/verify-email", { state: { email: formData.email } });
@@ -59,8 +58,6 @@ export const RegisterForm = () => { // Changed to RegisterPage assuming it's a f
     onError: (error) => {
       const errorMsg = error.response?.data?.message || "Registration failed. Please try again.";
       toast.error(errorMsg);
-      // If the error is specific to a field (like email already exists),
-      // your backend might return an errors object.
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -74,7 +71,6 @@ export const RegisterForm = () => { // Changed to RegisterPage assuming it's a f
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: undefined }));
     if (errors.general) setErrors(prev => ({ ...prev, general: undefined }));
-    // Clear confirmPassword error if password changes
     if (name === "password" && errors.confirmPassword === "Passwords don't match") {
       setErrors(prev => ({ ...prev, confirmPassword: undefined }));
     }
@@ -95,135 +91,158 @@ export const RegisterForm = () => { // Changed to RegisterPage assuming it's a f
       setErrors(fieldErrors);
       return;
     }
-    // Send validated data (firstName, lastName, email, password)
-    // Exclude confirmPassword from the payload sent to the backend
     const { confirmPassword, ...payload } = result.data;
-    // If this form is for staff self-registration, roleName might be fixed or omitted.
-    // If an admin uses this to create users, you might add roleName to payload.
-    // For now, assuming self-registration or backend default role for staff.
     registerMutation.mutate(payload);
   };
 
   return (
-    <div className="flex min-h-screen bg-page-bg">
-      {/* Left Visual Side */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col items-center justify-center bg-golden-hour-gradient p-12 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-60 h-60 sm:w-72 sm:h-72 bg-brand-yellow-light/10 rounded-full -translate-x-1/3 -translate-y-1/3 blur-3xl opacity-70"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-80 sm:h-80 bg-brand-yellow-dark/10 rounded-full translate-x-1/4 translate-y-1/4 blur-3xl opacity-70"></div>
-        <div className="relative z-10 text-center">
-          <Link to="/" className="inline-block mb-8 sm:mb-10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-md">
-            <img src="/images/logo2.png" alt="ParkWell Logo" className="h-16 sm:h-20 w-auto mx-auto opacity-90 drop-shadow-lg" />
-            <h1 className="text-4xl sm:text-5xl font-bold mt-3 sm:mt-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-yellow-50 to-yellow-100 drop-shadow-sm">
-              ParkWell
-            </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 sm:p-6">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 sm:p-10 border border-gray-200/50 bg-gradient-to-b from-white to-gray-50/50">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block mb-6 transition-transform duration-200 hover:scale-105">
+            <img src="/images/logo2.png" alt="XYZ LTD PMS Logo" className="h-16 sm:h-20 w-auto mx-auto" />
           </Link>
-          <p className="text-lg sm:text-xl mt-4 sm:mt-6 font-light max-w-xs sm:max-w-sm mx-auto leading-relaxed opacity-80">
-            Join the ParkWell Team. <br />Empowering Efficient Parking Management.
-          </p>
-          <div className="mt-12 sm:mt-16">
-            <UserPlus size={120} strokeWidth={0.75} className="mx-auto text-white/20 opacity-40" />
-            <p className="text-xs mt-3 opacity-50 tracking-wider">STAFF ACCOUNT CREATION</p>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">Create An Account</h1>
+          <p className="text-base text-gray-500 mt-2">Register as an Administrator or Attendant</p>
         </div>
-      </div>
 
-      {/* Right Form Side */}
-      <div className="flex flex-1 flex-col items-center justify-center p-4 py-10 sm:p-8 lg:py-12 lg:px-10 overflow-y-auto">
-        <div className="w-full max-w-xs sm:max-w-sm">
-          <div className="flex justify-center mb-6 lg:hidden">
-            <Link to="/"> <img src="/images/logo2.png" alt="ParkWell Logo" className="h-10 w-auto text-brand-yellow" /> </Link>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label htmlFor="firstName" className="block text-base font-medium text-gray-700 mb-2">First Name</Label>
+            <Input
+              id="firstName"
+              name="firstName"
+              type="text"
+              autoComplete="given-name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.firstName ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Enter your first name"
+            />
+            {errors.firstName && <p className="mt-2 text-sm text-red-500">{errors.firstName}</p>}
           </div>
-          <div className="bg-card-bg shadow-2xl rounded-xl p-6 sm:p-8 border border-theme-border-default/20">
-            <div className="text-left mb-4">
-              <Link to="/login" className="inline-flex items-center text-sm text-link hover:text-link-hover group">
-                <ArrowLeft size={16} className="mr-1.5 transition-transform duration-150 group-hover:-translate-x-1" />
-                Back to Sign In
-              </Link>
-            </div>
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-main mb-1.5">Create Staff Account</h2>
-              <p className="text-text-muted text-sm">Register as an Administrator or Attendant.</p>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="firstName" className="block text-xs font-semibold text-text-main mb-1.5 tracking-wide uppercase">First Name</Label>
-                  <Input id="firstName" name="firstName" type="text" autoComplete="given-name" value={formData.firstName} onChange={handleChange}
-                    className={`w-full bg-input-bg text-text-main placeholder-text-placeholder rounded-md py-2.5 px-4 border-2 focus:bg-card-bg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow ${errors.firstName ? "border-destructive ring-1 ring-destructive/30" : "border-theme-border-input"}`}
-                    placeholder="e.g., Alex"
-                  />
-                  {errors.firstName && <p className="mt-1 text-xs text-destructive">{errors.firstName}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="lastName" className="block text-xs font-semibold text-text-main mb-1.5 tracking-wide uppercase">Last Name</Label>
-                  <Input id="lastName" name="lastName" type="text" autoComplete="family-name" value={formData.lastName} onChange={handleChange}
-                    className={`w-full bg-input-bg text-text-main placeholder-text-placeholder rounded-md py-2.5 px-4 border-2 focus:bg-card-bg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow ${errors.lastName ? "border-destructive ring-1 ring-destructive/30" : "border-theme-border-input"}`}
-                    placeholder="e.g., Johnson"
-                  />
-                  {errors.lastName && <p className="mt-1 text-xs text-destructive">{errors.lastName}</p>}
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="email" className="block text-xs font-semibold text-text-main mb-1.5 tracking-wide uppercase">Email</Label>
-                <Input id="email" name="email" type="email" autoComplete="email" value={formData.email} onChange={handleChange}
-                  className={`w-full bg-input-bg text-text-main placeholder-text-placeholder rounded-md py-2.5 px-4 border-2 focus:bg-card-bg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow ${errors.email ? "border-destructive ring-1 ring-destructive/30" : "border-theme-border-input"}`}
-                  placeholder="staff.member@example.com"
-                />
-                {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
-              </div>
-              <div>
-                <Label htmlFor="password" className="block text-xs font-semibold text-text-main mb-1.5 tracking-wide uppercase">Password</Label>
-                <div className="relative">
-                  <Input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" value={formData.password} onChange={handleChange}
-                    className={`w-full bg-input-bg text-text-main placeholder-text-placeholder rounded-md py-2.5 px-4 border-2 focus:bg-card-bg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow ${errors.password ? "border-destructive ring-1 ring-destructive/30" : "border-theme-border-input"}`}
-                    placeholder="Create a strong password"
-                  />
-                  <button type="button" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-text-placeholder hover:text-text-main" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {errors.password && <p className="mt-1 text-xs text-destructive">{errors.password}</p>}
-              </div>
-              <div>
-                <Label htmlFor="confirmPassword" className="block text-xs font-semibold text-text-main mb-1.5 tracking-wide uppercase">Confirm Password</Label>
-                <div className="relative">
-                  <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} autoComplete="new-password" value={formData.confirmPassword} onChange={handleChange}
-                    className={`w-full bg-input-bg text-text-main placeholder-text-placeholder rounded-md py-2.5 px-4 border-2 focus:bg-card-bg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow ${errors.confirmPassword ? "border-destructive ring-1 ring-destructive/30" : "border-theme-border-input"}`}
-                    placeholder="Re-type password"
-                  />
-                  <button type="button" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-text-placeholder hover:text-text-main" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {errors.confirmPassword && <p className="mt-1 text-xs text-destructive">{errors.confirmPassword}</p>}
-              </div>
-
-              {/* If Admin creates users via this form, a Role select dropdown would go here */}
-              {/* For self-registration, role is usually fixed or determined by backend */}
-
-              {errors.general && <p className="text-sm text-destructive text-center py-2 bg-destructive/10 rounded-md border border-destructive/30">{errors.general}</p>}
-
-              <Button type="submit" disabled={registerMutation.isLoading}
-                className="w-full mt-6 flex items-center justify-center py-3 text-sm sm:text-base bg-brand-yellow hover:bg-brand-yellow-hover text-text-on-brand font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-card-bg focus:ring-brand-yellow disabled:opacity-70 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0"
+          <div>
+            <Label htmlFor="lastName" className="block text-base font-medium text-gray-700 mb-2">Last Name</Label>
+            <Input
+              id="lastName"
+              name="lastName"
+              type="text"
+              autoComplete="family-name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.lastName ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Enter your last name"
+            />
+            {errors.lastName && <p className="mt-2 text-sm text-red-500">{errors.lastName}</p>}
+          </div>
+          <div>
+            <Label htmlFor="email" className="block text-base font-medium text-gray-700 mb-2">Email Address</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Enter your email"
+            />
+            {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email}</p>}
+          </div>
+          {/* <div>
+            <Label htmlFor="role" className="block text-base font-medium text-gray-700 mb-2">Role</Label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base bg-white focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.role ? "border-red-500" : "border-gray-300"}`}
+            >
+              <option value="PARKING_ATTENDANT">Parking Attendant</option>
+              <option value="ADMIN">Administrator</option>
+            </select>
+            {errors.role && <p className="mt-2 text-sm text-red-500">{errors.role}</p>}
+          </div> */}
+          <div>
+            <Label htmlFor="password" className="block text-base font-medium text-gray-700 mb-2">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                placeholder="Create a strong password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-teal-600 transition-colors duration-200"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {registerMutation.isLoading ? (
-                  <> <Loader size="sm" className="mr-2" colorClassName="border-text-on-brand" /> Creating Account... </>
-                ) : (
-                  <> <UserPlus size={18} className="mr-2" /> Create Staff Account </>
-                )}
-              </Button>
-              <div className="text-center pt-3">
-                <p className="text-sm text-text-muted">
-                  Already have a staff account?{" "}
-                  <Link to="/login" className="font-medium text-link hover:text-link-hover hover:underline">Sign In</Link>
-                </p>
-              </div>
-            </form>
+                {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+              </button>
+            </div>
+            {errors.password && <p className="mt-2 text-sm text-red-500">{errors.password}</p>}
           </div>
-          <p className="text-center text-xs text-text-muted mt-8">
-            © {new Date().getFullYear()} ParkWell Systems.
-          </p>
-        </div>
+          <div>
+            <Label htmlFor="confirmPassword" className="block text-base font-medium text-gray-700 mb-2">Confirm Password</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`w-full border rounded-lg py-3 px-4 text-gray-700 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition duration-200 hover:border-teal-400 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
+                placeholder="Re-type password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-teal-600 transition-colors duration-200"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              >
+                {showConfirmPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+              </button>
+            </div>
+            {errors.confirmPassword && <p className="mt-2 text-sm text-red-500">{errors.confirmPassword}</p>}
+          </div>
+
+          {errors.general && (
+            <p className="text-base text-red-500 text-center py-3 bg-red-50 rounded-lg border border-red-200">
+              {errors.general}
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            disabled={registerMutation.isLoading}
+            className="w-full flex items-center justify-center py-3 text-base text-white bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 shadow-md hover:shadow-lg"
+          >
+            {registerMutation.isLoading ? (
+              <> <Loader size="sm" className="mr-2" colorClassName="border-white" /> Creating Account... </>
+            ) : (
+              <> <UserPlus size={24} className="mr-2" /> Create Staff Account </>
+            )}
+          </Button>
+          <div className="text-center pt-4 flex justify-between items-center">
+            <Link to="/login" className="inline-flex items-center text-base text-teal-600 hover:text-teal-700 hover:underline transition-colors duration-200">
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Sign In
+            </Link>
+            <p className="text-base text-gray-500">
+              Already have an account?{" "}
+              <Link to="/login" className="text-teal-600 hover:text-teal-700 hover:underline transition-colors duration-200">Sign in</Link>
+            </p>
+          </div>
+        </form>
+        <p className="text-center text-sm text-gray-500 mt-8">
+          © {new Date().getFullYear()} XYZ LTD PMS Systems.
+        </p>
       </div>
     </div>
   );
